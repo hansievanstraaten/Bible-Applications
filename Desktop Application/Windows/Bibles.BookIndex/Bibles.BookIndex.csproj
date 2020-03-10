@@ -4,19 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3E69298C-BA70-42FF-AFE2-2C297AF56550}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <RootNamespace>Bibles</RootNamespace>
-    <AssemblyName>Bibles</AssemblyName>
+    <ProjectGuid>{B65D0057-2539-41D4-9A6D-2E1F8F76B182}</ProjectGuid>
+    <OutputType>library</OutputType>
+    <RootNamespace>Bibles.BookIndex</RootNamespace>
+    <AssemblyName>Bibles.BookIndex</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -26,16 +24,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>Books.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -54,24 +48,9 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
+    <Compile Include="Indexer.xaml.cs">
+      <DependentUpon>Indexer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -95,52 +74,32 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <Page Include="Indexer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bible.Models\Bible.Models.csproj">
       <Project>{9fc7a6c5-cbf7-4d8d-b998-b5b4c815fe05}</Project>
       <Name>Bible.Models</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Bibles.BookIndex\Bibles.BookIndex.csproj">
-      <Project>{b65d0057-2539-41d4-9a6d-2e1f8f76b182}</Project>
-      <Name>Bibles.BookIndex</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Bibles.Common\Bibles.Common.csproj">
       <Project>{1AB1D3C5-374D-48E6-95FA-36DCA0A912AF}</Project>
       <Name>Bibles.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Bibles.DataResources\Bibles.DataResources.csproj">
-      <Project>{1d25ca61-d07c-47e4-96cb-bee25d82c0f7}</Project>
-      <Name>Bibles.DataResources</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Bibles.Data\Bibles.Data.csproj">
-      <Project>{eb22bf5b-1a1a-4db7-874b-50de6f7e1d1f}</Project>
+      <Project>{EB22BF5B-1A1A-4DB7-874B-50DE6F7E1D1F}</Project>
       <Name>Bibles.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\GeneralExtensions\GeneralExtensions.csproj">
       <Project>{df72187c-d643-4e5f-af68-190c023930a9}</Project>
       <Name>GeneralExtensions</Name>
     </ProjectReference>
-    <ProjectReference Include="..\IconSet\IconSet.csproj">
-      <Project>{8ae0a307-a872-4d6d-a58e-31d28ce5b89d}</Project>
-      <Name>IconSet</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ViSo.Common\ViSo.Common.csproj">
-      <Project>{cfb74caf-b98c-4387-94e3-ae9afbe16b7e}</Project>
-      <Name>ViSo.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ViSo.SharedEnums\ViSo.SharedEnums.csproj">
-      <Project>{44340843-a61b-4a2b-99d8-7142bf456d85}</Project>
-      <Name>ViSo.SharedEnums</Name>
-    </ProjectReference>
     <ProjectReference Include="..\WPF.Tools\WPF.Tools.csproj">
       <Project>{53799c60-aa9d-4deb-86e0-8e70dd1844f3}</Project>
       <Name>WPF.Tools</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Books.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

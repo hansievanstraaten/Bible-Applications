@@ -1,28 +1,70 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using Bibles.BookIndex;
+using Bibles.Common;
+using Bibles.Data;
+using System;
+using WPF.Tools.BaseClasses;
 
 namespace Bibles
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : WindowBase
     {
+        private Indexer uxIndexer = new Indexer();
+
         public MainWindow()
         {
-            InitializeComponent();
+            this.InitializeComponent();
+
+            this.Initialize();
         }
+
+        private void SlectedBook_Changed(object sender, string key)
+        {
+            try
+            {
+
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
+        }
+
+        private void SeletedChapter_Changed(object sender, string key)
+        {
+            try
+            {
+
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
+        }
+        
+        private void SelectedVerse_Changed(object sender, string key)
+        {
+            try
+            {
+
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
+        }
+
+        private void Initialize()
+        {
+            this.uxLeftTab.Items.Add(this.uxIndexer);
+
+            this.uxIndexer.BookChange += this.SlectedBook_Changed;
+
+            this.uxIndexer.ChapterChanged += this.SeletedChapter_Changed;
+
+            this.uxIndexer.VerseChanged += this.SelectedVerse_Changed;
+        }  
     }
 }
