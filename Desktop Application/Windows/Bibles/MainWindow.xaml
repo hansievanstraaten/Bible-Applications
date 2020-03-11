@@ -1,4 +1,5 @@
-﻿<src:WindowBase xmlns:TabControl="clr-namespace:WPF.Tools.TabControl;assembly=WPF.Tools"  
+﻿<src:WindowBase xmlns:Specialized="clr-namespace:WPF.Tools.Specialized;assembly=WPF.Tools"  
+                xmlns:TabControl="clr-namespace:WPF.Tools.TabControl;assembly=WPF.Tools"  
                 x:Class="Bibles.MainWindow"
                 xmlns:src="clr-namespace:WPF.Tools.BaseClasses;assembly=WPF.Tools"
                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -10,14 +11,20 @@
                 Title="Bibles" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+
+        <Menu Grid.Row="0" Grid.Column="0"></Menu>
+
+        <Specialized:MessageLabel Grid.Row="0" Grid.Column="1" x:Name="uxMessageLable" Foreground="Red" />
         
-        <TabControl:TabControlVertical Grid.Row="0" Grid.Column="0" x:Name="uxLeftTab" DockLocation="Left" />
+        <TabControl:TabControlVertical Grid.Row="1" Grid.Column="0" x:Name="uxLeftTab" DockLocation="Left" />
         
         
         

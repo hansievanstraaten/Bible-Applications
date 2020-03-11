@@ -41,10 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AvailableBooks\AvailableBibles.cs" />
     <Compile Include="BibleBooks\BookModel.cs" />
     <Compile Include="BibleBooks\ChapterModel.cs" />
     <Compile Include="BibleBooks\VerseModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WPF.Tools\WPF.Tools.csproj">
+      <Project>{53799C60-AA9D-4DEB-86E0-8E70DD1844F3}</Project>
+      <Name>WPF.Tools</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,7 +1,10 @@
 ﻿using Bibles.BookIndex;
 using Bibles.Common;
 using Bibles.Data;
+using Bibles.DataResources;
+using GeneralExtensions;
 using System;
+using System.Windows;
 using WPF.Tools.BaseClasses;
 
 namespace Bibles
@@ -17,7 +20,39 @@ namespace Bibles
         {
             this.InitializeComponent();
 
-            this.Initialize();
+            this.uxMessageLable.Content = "Loading…";
+
+             InitializeData initialData = new InitializeData();
+
+            initialData.InitialDataLoadCompleted += this.InitialDataLoad_Completed;
+
+            initialData.LoadEmbeddedBibles(this.Dispatcher);
+
+            this.InitializeTabs();
+        }
+
+        private void InitialDataLoad_Completed(object sender, string message, bool completed, Exception error)
+        {
+            try
+            {
+                if (error != null)
+                {
+                    throw error;
+                }
+
+                if (completed)
+                {
+                    this.uxMessageLable.Content = string.Empty;
+                }
+                else
+                {
+                    this.uxMessageLable.Content = message;
+                }
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.InnerExceptionMessage());
+            }
         }
 
         private void SlectedBook_Changed(object sender, string key)
@@ -55,8 +90,8 @@ namespace Bibles
                 ErrorLog.ShowError(err);
             }
         }
-
-        private void Initialize()
+        
+        private void InitializeTabs()
         {
             this.uxLeftTab.Items.Add(this.uxIndexer);
 

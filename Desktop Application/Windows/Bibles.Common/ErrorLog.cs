@@ -2,6 +2,7 @@
 using System;
 using System.Text;
 using System.Windows;
+using WPF.Tools.Dictionaries;
 
 namespace Bibles.Common
 {
