@@ -65,7 +65,13 @@
                                       ItemsSource="{Binding BookChapters}"
                                       SelectedItem="{Binding SelectedChapter}">
             <DataGridObjects:ViSoDataGrid.Columns>
-                <DataGridTextColumn Header="Chapters" Binding="{Binding ChapterNumber}" />
+                <DataGridTextColumn Header="Chapters" Binding="{Binding ChapterNumber}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
             </DataGridObjects:ViSoDataGrid.Columns>
         </DataGridObjects:ViSoDataGrid>
                 
@@ -78,7 +84,13 @@
                                       ItemsSource="{Binding ChapterVerses}"
                                       SelectedItem="{Binding SelectedVerse}">
             <DataGridObjects:ViSoDataGrid.Columns>
-                <DataGridTextColumn Header="Verses" Binding="{Binding VerseNumber}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Verses" Binding="{Binding VerseNumber}" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
             </DataGridObjects:ViSoDataGrid.Columns>            
         </DataGridObjects:ViSoDataGrid>
                                       

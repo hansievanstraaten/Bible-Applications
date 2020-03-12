@@ -137,6 +137,10 @@
       <Project>{9fc7a6c5-cbf7-4d8d-b998-b5b4c815fe05}</Project>
       <Name>Bible.Models</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Bibles.Bookmarks\Bibles.Bookmarks.csproj">
+      <Project>{dbb8a019-9327-4874-996d-03621ef9a141}</Project>
+      <Name>Bibles.Bookmarks</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Bibles.Common\Bibles.Common.csproj">
       <Project>{1ab1d3c5-374d-48e6-95fa-36dca0a912af}</Project>
       <Name>Bibles.Common</Name>

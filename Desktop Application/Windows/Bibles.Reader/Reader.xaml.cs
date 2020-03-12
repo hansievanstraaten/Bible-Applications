@@ -76,7 +76,10 @@ namespace Bibles.Reader
 
                 case "BibleId":
 
-                    this.LoadVerses();
+                    if (base.IsLoaded)
+                    {
+                        this.LoadVerses();
+                    }
 
                     break;
             }

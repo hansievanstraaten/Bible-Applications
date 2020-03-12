@@ -162,6 +162,10 @@
       <Project>{b65d0057-2539-41d4-9a6d-2e1f8f76b182}</Project>
       <Name>Bibles.BookIndex</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Bibles.Bookmarks\Bibles.Bookmarks.csproj">
+      <Project>{dbb8a019-9327-4874-996d-03621ef9a141}</Project>
+      <Name>Bibles.Bookmarks</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Bibles.Common\Bibles.Common.csproj">
       <Project>{1AB1D3C5-374D-48E6-95FA-36DCA0A912AF}</Project>
       <Name>Bibles.Common</Name>

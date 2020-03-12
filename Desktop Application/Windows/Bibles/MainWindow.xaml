@@ -23,7 +23,14 @@
         </Grid.ColumnDefinitions>
 
         <!-- Main Menu -->
-        <Menu Grid.Row="0" Grid.Column="0"></Menu>
+        <Menu Grid.Row="0" Grid.Column="0">
+            <MenuItem Header="File">
+                <MenuItem Header="Exit" Click="Exit_Cliked" />
+            </MenuItem>
+            <MenuItem Header="View">
+                <MenuItem Header="Bibles" x:Name="uxMenuBiles"/>                
+            </MenuItem>
+        </Menu>
 
         <Specialized:MessageLabel Grid.Row="0" Grid.Column="2" x:Name="uxMessageLable" Foreground="Red" HorizontalAlignment="Right" />
         
