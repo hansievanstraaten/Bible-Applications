@@ -1,5 +1,6 @@
 ﻿using Bible.Models.BibleBooks;
 using Bibles.Data.DataEnums;
+using Bibles.DataResources;
 using GeneralExtensions;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,6 @@ namespace Bibles.Data
         #region Private Fields
 
         private readonly static object instanceLock = new object();
-
-        private readonly static string[] keySplitValue = new string[] { "||" };
 
         private static GlobalStaticData instance;
 
@@ -187,11 +186,13 @@ namespace Bibles.Data
         {
             return keyToBookIndex[this.GetBookKey(key)];
         }
-
+        
         public List<BookModel> GetTestament(TestamentEnum testament)
         {
+            string endString = $"{testament}||";
+
             return this.bookModels
-                    .Where(b => b.Key.EndsWith(testament.ToString()))
+                    .Where(b => b.Key.EndsWith(endString))
                     .Select(s => s.Value)
                     .ToList();
         }
@@ -200,19 +201,19 @@ namespace Bibles.Data
 
         private string GetBookKey(string key)
         {
-            return key.Substring(0, 3);
+            return key.Substring(0, 5);
         }
 
         private string GetChapterKey(string key)
         {
-            string[] keyItems = key.Split(keySplitValue, StringSplitOptions.RemoveEmptyEntries);
+            string[] keyItems = key.Split(BiblesData.KeySplitValue, StringSplitOptions.RemoveEmptyEntries);
 
-            return $"{keyItems[0]}||{keyItems[1]}";
+            return $"{keyItems[0]}||{keyItems[1]}||";
         }
 
         private int GetChapterCount(string key)
         {
-            string[] chapterSplit = key.Split(keySplitValue, StringSplitOptions.RemoveEmptyEntries);
+            string[] chapterSplit = key.Split(BiblesData.KeySplitValue, StringSplitOptions.RemoveEmptyEntries);
 
             if (chapterSplit.Length < 2)
             {
@@ -224,7 +225,7 @@ namespace Bibles.Data
 
         private int GetVerseCount(string key)
         {
-            string[] chapterSplit = key.Split(keySplitValue, StringSplitOptions.RemoveEmptyEntries);
+            string[] chapterSplit = key.Split(BiblesData.KeySplitValue, StringSplitOptions.RemoveEmptyEntries);
 
             if (chapterSplit.Length < 3)
             {
@@ -239,17 +240,17 @@ namespace Bibles.Data
         #region KEY BUILD METHODS
         private string BuildBookKey(int index, TestamentEnum testament)
         {
-            return $"{index.ParseToString().PadLeft(2, '0')}{testament}";
+            return $"{index.ParseToString().PadLeft(2, '0')}{testament}||";
         }
 
         private string BuildChapterKey(string bookKey, int chapterNumber)
         {
-            return $"{bookKey}||{chapterNumber}";
+            return $"{bookKey}{chapterNumber}||";
         }
 
         private string BuildVerseKey(string chapterKey, int verseNumber)
         {
-            return $"{chapterKey}||{verseNumber}";
+            return $"{chapterKey}{verseNumber}||";
         }
 
         #endregion

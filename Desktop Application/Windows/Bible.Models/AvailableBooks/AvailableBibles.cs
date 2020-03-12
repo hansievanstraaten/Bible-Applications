@@ -1,47 +1,51 @@
-﻿using WPF.Tools.Attributes;
+﻿using Bibles.DataResources;
+using Bibles.DataResources.Models;
+using System.Collections.Generic;
+using WPF.Tools.Attributes;
 using WPF.Tools.BaseClasses;
 using WPF.Tools.ModelViewer;
 using WPF.Tools.ToolModels;
+using System.Linq;
 
 namespace Bible.Models.AvailableBooks
 {
     [ModelNameAttribute("Bibles")]
     public class AvailableBibles : ModelsBase
     {
-        private string bibleName;
+        private int bibleId;
 
         [FieldInformationAttribute("Bible")]
         [ItemTypeAttribute(ModelItemTypeEnum.ComboBox, IsComboboxEditable = false)]
         [ValuesSourceAttribute("ListedBibles")]
-        public string BibleName
+        public int BibleId
         {
             get
             {
-                return this.bibleName;
+                return this.bibleId;
             }
 
             set
             {
-                this.bibleName = value;
+                this.bibleId = value;
 
                 base.OnPropertyChanged("BibleName");
             }
         }
-
+        
         public DataItemModel[] ListedBibles
         {
             get
             {
-                //List<DataItemModel> result = new List<DataItemModel>();
+                List<BibleModel> bibles = BiblesData.Database.GetBibles().Result;
 
-                //result.Add(new DataItemModel { DisplayValue = " ", ItemKey = "<Select>" });
+                List<DataItemModel> result = new List<DataItemModel>();
 
-                //result.AddRange(GlobalDictionary.GetAvailableBibles().ToArray());
+                foreach(BibleModel model in bibles)
+                {
+                    result.Add(new DataItemModel { DisplayValue = model.BibleName, ItemKey = model.BiblesId });
+                }
 
-                //return result.ToArray();
-                // return GlobalDictionary.GetAvailableBibles().ToArray();
-
-                return null;
+                return result.OrderBy(d => d.DisplayValue).ToArray();
             }
         }
     }

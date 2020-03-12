@@ -4,15 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8AE0A307-A872-4D6D-A58E-31D28CE5B89D}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>IconSet</RootNamespace>
-    <AssemblyName>IconSet</AssemblyName>
+    <ProjectGuid>{0D0860A4-94BE-4384-9E23-4A0B4D35E28E}</ProjectGuid>
+    <OutputType>library</OutputType>
+    <RootNamespace>Bibles.Reader</RootNamespace>
+    <AssemblyName>Bibles.Reader</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
     <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,9 +30,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>ViSo_nice.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <PlatformTarget>x64</PlatformTarget>
@@ -87,132 +84,91 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PresentationCore" />
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ColourConverters.cs" />
-    <Compile Include="IconSets.cs" />
-    <Compile Include="ImageConverters.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BibleLoader.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Reader.xaml.cs">
+      <DependentUpon>Reader.xaml</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Accept.png" />
+    <Page Include="Reader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Add.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ArrowRight.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Search.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SearchFolder.png" />
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\Bible.Models\Bible.Models.csproj">
+      <Project>{9fc7a6c5-cbf7-4d8d-b998-b5b4c815fe05}</Project>
+      <Name>Bible.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bibles.Common\Bibles.Common.csproj">
+      <Project>{1ab1d3c5-374d-48e6-95fa-36dca0a912af}</Project>
+      <Name>Bibles.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bibles.DataResources\Bibles.DataResources.csproj">
+      <Project>{1d25ca61-d07c-47e4-96cb-bee25d82c0f7}</Project>
+      <Name>Bibles.DataResources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bibles.Data\Bibles.Data.csproj">
+      <Project>{eb22bf5b-1a1a-4db7-874b-50de6f7e1d1f}</Project>
+      <Name>Bibles.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GeneralExtensions\GeneralExtensions.csproj">
       <Project>{df72187c-d643-4e5f-af68-190c023930a9}</Project>
       <Name>GeneralExtensions</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Browse.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ViSo_nice.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ViSo_nice_Icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ArrowDown.png" />
-    <None Include="Resources\ArrowLeft.png" />
-    <None Include="Resources\ArrowUp.png" />
-    <None Include="Resources\Save.png" />
-    <None Include="Resources\Delete.png" />
-    <None Include="Resources\Edit.png" />
-    <None Include="Resources\Books.png" />
-    <None Include="Resources\Bookmark.png" />
-    <None Include="Resources\Pined.png" />
-    <None Include="Resources\UnPined.png" />
-    <None Include="Resources\OpenBook.png" />
-    <None Include="Resources\AlignLeft.png" />
-    <None Include="Resources\AlignRight.png" />
-    <None Include="Resources\Bullets.png" />
-    <None Include="Resources\Copy.png" />
-    <None Include="Resources\Cut.png" />
-    <None Include="Resources\GrowFont.png" />
-    <None Include="Resources\Paste.png" />
-    <None Include="Resources\ShrinkFont.png" />
-    <None Include="Resources\AcceptSmall.png" />
-    <None Include="Resources\CancelSmall.png" />
-    <None Include="Resources\FolderSmall.png" />
-    <None Include="Resources\WebSmall.png" />
-    <None Include="Resources\BackcolorSmall.png" />
-    <None Include="Resources\BoldSmall.png" />
-    <None Include="Resources\BulletsSmall.png" />
-    <None Include="Resources\Center2Small.png" />
-    <None Include="Resources\CenterSmall.png" />
-    <None Include="Resources\ColorSmall.png" />
-    <None Include="Resources\EditorSmall.png" />
-    <None Include="Resources\HtmlSmall.png" />
-    <None Include="Resources\IdentSmall.png" />
-    <None Include="Resources\ImageSmall.png" />
-    <None Include="Resources\ItalicSmall.png" />
-    <None Include="Resources\LeftAlignSmall.png" />
-    <None Include="Resources\LinkSmall.png" />
-    <None Include="Resources\NewSmall.png" />
-    <None Include="Resources\NumberedSmall.png" />
-    <None Include="Resources\OpenSmall.png" />
-    <None Include="Resources\OutIdentSmall.png" />
-    <None Include="Resources\RightAlignSmall.png" />
-    <None Include="Resources\SaveSmall.png" />
-    <None Include="Resources\UnderLineSmall.png" />
-    <None Include="Resources\ViewSmall.png" />
-    <None Include="Resources\BookmarkSmall.png" />
-    <None Include="Resources\BookmarkSmallRed.png" />
-    <None Include="Resources\Highlight.png" />
-    <None Include="Resources\Underline.png" />
-    <None Include="Resources\Hyperlink.png" />
-    <None Include="Resources\Link.png" />
-    <None Include="Resources\UnLink.png" />
-    <None Include="Resources\Redo.png" />
-    <None Include="Resources\Undo.png" />
-    <None Include="Resources\HighlightClear.png" />
-    <None Include="Resources\Adjustment.png" />
-    <None Include="Resources\Companies.png" />
-    <None Include="Resources\Contacts.png" />
-    <None Include="Resources\Invoice.png" />
-    <None Include="Resources\Delivering.png" />
-    <None Include="Resources\Print.png" />
-    <None Include="Resources\Cancel.png" />
-    <None Include="Resources\Payment.png" />
-    <None Include="Resources\Backup.png" />
-    <None Include="Resources\BackupRestore.png" />
-    <Content Include="ViSo_nice.ico" />
+    <ProjectReference Include="..\IconSet\IconSet.csproj">
+      <Project>{8ae0a307-a872-4d6d-a58e-31d28ce5b89d}</Project>
+      <Name>IconSet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ViSo.Common\ViSo.Common.csproj">
+      <Project>{cfb74caf-b98c-4387-94e3-ae9afbe16b7e}</Project>
+      <Name>ViSo.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ViSo.SharedEnums\ViSo.SharedEnums.csproj">
+      <Project>{44340843-a61b-4a2b-99d8-7142bf456d85}</Project>
+      <Name>ViSo.SharedEnums</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WPF.Tools\WPF.Tools.csproj">
+      <Project>{53799c60-aa9d-4deb-86e0-8e70dd1844f3}</Project>
+      <Name>WPF.Tools</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
