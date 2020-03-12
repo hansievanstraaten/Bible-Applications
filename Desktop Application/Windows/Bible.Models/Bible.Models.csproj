@@ -93,7 +93,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AvailableBooks\AvailableBibles.cs" />
+    <Compile Include="AvailableBooks\BibleBookModel.cs" />
     <Compile Include="BibleBooks\BookModel.cs" />
     <Compile Include="BibleBooks\ChapterModel.cs" />
     <Compile Include="BibleBooks\VerseModel.cs" />
@@ -103,6 +103,10 @@
     <ProjectReference Include="..\Bibles.DataResources\Bibles.DataResources.csproj">
       <Project>{1d25ca61-d07c-47e4-96cb-bee25d82c0f7}</Project>
       <Name>Bibles.DataResources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GeneralExtensions\GeneralExtensions.csproj">
+      <Project>{DF72187C-D643-4E5F-AF68-190C023930A9}</Project>
+      <Name>GeneralExtensions</Name>
     </ProjectReference>
     <ProjectReference Include="..\WPF.Tools\WPF.Tools.csproj">
       <Project>{53799C60-AA9D-4DEB-86E0-8E70DD1844F3}</Project>

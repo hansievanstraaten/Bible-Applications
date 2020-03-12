@@ -6,13 +6,16 @@ using WPF.Tools.BaseClasses;
 using WPF.Tools.ModelViewer;
 using WPF.Tools.ToolModels;
 using System.Linq;
+using GeneralExtensions;
 
 namespace Bible.Models.AvailableBooks
 {
     [ModelNameAttribute("Bibles")]
-    public class AvailableBibles : ModelsBase
+    public class BibleBookModel : ModelsBase
     {
         private int bibleId;
+
+        private string bibleName;
 
         [FieldInformationAttribute("Bible")]
         [ItemTypeAttribute(ModelItemTypeEnum.ComboBox, IsComboboxEditable = false)]
@@ -28,19 +31,38 @@ namespace Bible.Models.AvailableBooks
             {
                 this.bibleId = value;
 
+                DataItemModel nameModel = this.ListedBibles.FirstOrDefault(id => id.ItemKey.ToInt32() == value);
+
+                this.BibleName = nameModel == null ? string.Empty : nameModel.DisplayValue;
+
+                base.OnPropertyChanged("BibleId");
+
                 base.OnPropertyChanged("BibleName");
             }
         }
         
+        public string BibleName 
+        {
+            get
+            {
+                return this.bibleName;
+            }
+
+            set
+            {
+                this.bibleName = value;
+            }
+        }
+
         public DataItemModel[] ListedBibles
         {
             get
             {
-                List<BibleModel> bibles = BiblesData.Database.GetBibles().Result;
+                List<Bibles.DataResources.Models.BibleModel> bibles = BiblesData.Database.GetBibles().Result;
 
                 List<DataItemModel> result = new List<DataItemModel>();
 
-                foreach(BibleModel model in bibles)
+                foreach(Bibles.DataResources.Models.BibleModel model in bibles)
                 {
                     result.Add(new DataItemModel { DisplayValue = model.BibleName, ItemKey = model.BiblesId });
                 }

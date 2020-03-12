@@ -5,6 +5,7 @@ using Bibles.DataResources;
 using Bibles.DataResources.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using WPF.Tools.BaseClasses;
@@ -17,26 +18,32 @@ namespace Bibles.Reader
     /// </summary>
     public partial class Reader : UserControlBase
     {
+        public delegate void BibleBookChangedEvent(object sender, BibleBookModel bible);
+
+        public event BibleBookChangedEvent BibleBookChanged;
+
         private string selectedKey;
 
         private Dictionary<int, BibleVerseModel> versesDictionary;
 
-        private Dictionary<int, HighlightRitchTextBox> loadedVersesDictionary = new Dictionary<int, HighlightRitchTextBox>();
+        private Dictionary<int, HighlightRitchTextBox> loadedTextBoxDictionary = new Dictionary<int, HighlightRitchTextBox>();
 
         public Reader()
         {
             this.InitializeComponent();
 
-            this.Bible = new AvailableBibles();
+            this.Bible = new BibleBookModel();
+
+            this.Bible.PropertyChanged += this.Bible_Changed;
 
             this.uxBible.Items.Add(this.Bible);
         }
-
-        public AvailableBibles Bible { get; set; }
+        
+        public BibleBookModel Bible { get; set; }
 
         public void SetBible(int bibleId)
         {
-            this.uxBible[0, 0].SetValue(bibleId);
+            this.uxBible[0, 0].SetValue(bibleId);            
         }
         
         public void SetChapter(string key)
@@ -53,6 +60,26 @@ namespace Bibles.Reader
             this.selectedKey = key;
 
             this.SetHeader();
+
+            this.ScrollToVerse(Formatters.GetVerseFromKey($"{this.Bible.BibleId}||{key}"));
+        }
+
+        private void Bible_Changed(object sender, PropertyChangedEventArgs e)
+        {
+            switch(e.PropertyName)
+            {
+                case "BibleName":
+                    
+                    this.BibleBookChanged?.Invoke(this, this.Bible);
+
+                    break;
+
+                case "BibleId":
+
+                    this.LoadVerses();
+
+                    break;
+            }
         }
 
         private void Bookmark_Cliked(object sender, RoutedEventArgs e)
@@ -126,10 +153,26 @@ namespace Bibles.Reader
                 ErrorLog.ShowError(err);
             }
         }
-    
+
+        private void Verse_GotFocus(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                HighlightRitchTextBox box = (HighlightRitchTextBox)sender;
+
+                this.selectedKey = Formatters.RemoveBibleId(((BibleVerseModel)box.Tag).BibleVerseKey);
+
+                this.SetHeader();
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
+        }
+
         private void SetHeader()
         {
-            string[] keyItems = this.selectedKey.Split(BiblesData.KeySplitValue, StringSplitOptions.RemoveEmptyEntries);
+            string[] keyItems = this.selectedKey.Split(Formatters.KeySplitValue, StringSplitOptions.RemoveEmptyEntries);
 
             string chapter = keyItems.Length >= 2 ? $" - {keyItems[1]}" : string.Empty;
 
@@ -140,13 +183,15 @@ namespace Bibles.Reader
 
         public void LoadVerses()
         {
+            this.versesDictionary = null;
+
             this.versesDictionary = BiblesData.Database.GetVerses($"{this.Bible.BibleId}||{this.selectedKey}");
 
-            this.ReserVerseGrid();
+            this.ResetversSetup();
 
-            for (int verse = 1; verse <= versesDictionary.Count; ++verse)
+            for (int verse = 1; verse <= this.versesDictionary.Count; ++verse)
             {
-                BibleVerseModel item = versesDictionary[verse];
+                BibleVerseModel item = this.versesDictionary[verse];
 
                 StackPanel panel = BibleLoader.GetVerseNumberPanel(this.Bible.BibleId, item, 0);
 
@@ -154,18 +199,20 @@ namespace Bibles.Reader
 
                 HighlightRitchTextBox textBox = BibleLoader.GetVerseAsTextBox(this.Bible.BibleId, item, 1);
 
-                //textBox.GotFocus += this.Verse_GorFocus;
+                textBox.GotFocus += this.Verse_GotFocus;
 
                 this.uxVerseGrid.Children.Add(textBox);
 
-                //this.loadedChapter.Add(verse, textBox);
+                this.loadedTextBoxDictionary.Add(verse, textBox);
 
                 //this.loadedChapterVerses.Add(verse, panel);
             }
         }
 
-        private void ReserVerseGrid()
+        private void ResetversSetup()
         {
+            this.loadedTextBoxDictionary.Clear();
+
             this.uxVerseGrid.Children.Clear();
 
             this.uxVerseGrid.RowDefinitions.Clear();
@@ -174,6 +221,22 @@ namespace Bibles.Reader
             {
                 this.uxVerseGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(26, GridUnitType.Auto) });
             }
+        }
+
+        private void ScrollToVerse(int verseNumber)
+        {
+            if (verseNumber <= 0 || !this.loadedTextBoxDictionary.ContainsKey(verseNumber))
+            {
+                return;
+            }
+
+            HighlightRitchTextBox verseBox = this.loadedTextBoxDictionary[verseNumber];
+
+            Point versePoint = verseBox.TranslatePoint(new Point(), this.uxVerseGrid);
+
+            this.uxVerseGridScroll.ScrollToVerticalOffset(versePoint.Y);
+
+            verseBox.Focus();
         }
     }
 }

@@ -7,6 +7,9 @@ using GeneralExtensions;
 using System;
 using System.Windows.Threading;
 using System.Windows.Media;
+using WPF.Tools.Functions;
+using System.Text;
+using System.IO;
 
 namespace Bibles.DataResources
 {
@@ -19,6 +22,7 @@ namespace Bibles.DataResources
         public delegate void InitialDataLoadCompletedEvent(object sender, string message, bool completed, Exception error);
 
         public event InitialDataLoadCompletedEvent InitialDataLoadCompleted;
+
 
         public async void LoadEmbeddedBibles(Dispatcher dispatcher, FontFamily defaultFont)
         {
@@ -35,11 +39,16 @@ namespace Bibles.DataResources
             }
 
             await Task.Run(() => 
-            {
+            {                
                 try
                 {
                     foreach (string bible in bibleNames)
                     {
+                        dispatcher.Invoke(() =>
+                        {
+                            this.InitialDataLoadCompleted?.Invoke(this, $"Loading...{bible}", false, null);
+                        });
+
                         BibleModel bibleModel = loadedBiles.Result.FirstOrDefault(l => l.BibleName == bible);
 
                         if (bibleModel == null)
@@ -50,17 +59,21 @@ namespace Bibles.DataResources
                                 BibleName = bible
                             };
 
-                            Task<int> result = BiblesData.Database.InsertBible(bibleModel);
+                            BiblesData.Database.InsertBible(bibleModel);
 
-                            bibleModel.BiblesId = result.Result;
+                            BibleModel added = BiblesData.Database.GetBible(bible);
+
+                            while(added == null)
+                            {
+                                Sleep.ThreadWait(100);
+
+                                added = BiblesData.Database.GetBible(bible);
+                            }
+
+                            bibleModel.BiblesId = added.BiblesId;
                         }
 
-                        dispatcher.Invoke(() => 
-                        {
-                            this.InitialDataLoadCompleted?.Invoke(this, $"Loading...{bible}", false, null);
-                        });
-
-                        this.LoadBibleVerses(bibleModel);
+                        this.LoadBibleVerses(dispatcher, bibleModel);
 
                         if (bible == this.systemDefaultbible)
                         {
@@ -92,7 +105,7 @@ namespace Bibles.DataResources
             });
         }
 
-        private void LoadBibleVerses(BibleModel bibleModel)
+        private void LoadBibleVerses(Dispatcher dispatcher, BibleModel bibleModel)
         {
             string bibleFormatName = bibleModel.BibleName
                 .Replace(' ', '_')
@@ -129,8 +142,43 @@ namespace Bibles.DataResources
 
                 bulkList.Add(verseModel);
             }
-                
-            BiblesData.Database.InsertBibleVerseBulk(bulkList);
+
+            int skipIndex = 0;
+
+            int takeValue = 500;
+
+            while(skipIndex <= bulkList.Count)
+            {
+                List<BibleVerseModel> addList = bulkList.Skip(skipIndex).Take(takeValue).ToList();
+
+                BiblesData.Database.InsertBibleVerseBulk(addList);
+
+                skipIndex += takeValue;
+
+                string checkKey = addList.Last().BibleVerseKey;
+
+                int waitIndex = 0;
+
+                while (BiblesData.Database.GetVerse(checkKey) == null)
+                {
+                    Sleep.ThreadWait(200);
+
+                    ++waitIndex;
+
+                    if (waitIndex >= 20)
+                    {
+                        dispatcher.Invoke(() =>
+                        {
+                            this.InitialDataLoadCompleted?.Invoke(this, $"Loading...{bibleModel.BibleName}", false, null);
+                        });
+
+                        foreach (BibleVerseModel verseModel in addList)
+                        {
+                            BiblesData.Database.InsertBibleVerse(verseModel);
+                        }
+                    }
+                }
+            }                   
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Bibles.BookIndex;
+﻿using Bible.Models.AvailableBooks;
+using Bibles.BookIndex;
 using Bibles.Common;
 using Bibles.Data;
 using Bibles.DataResources;
@@ -83,7 +84,19 @@ namespace Bibles
                 ErrorLog.ShowError(err);
             }
         }
-        
+
+        private void OnSelectedTabBible_Changed(object sender, BibleBookModel bible)
+        {
+            try
+            {
+                this.uxMainTab.SetHeaderName(0, bible.BibleName);
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
+        }
+
         private void LeftTabPin_Changed(object sender, bool isPined)
         {
             TabControlVertical item = (TabControlVertical)sender;
@@ -108,12 +121,16 @@ namespace Bibles
 
             this.uxIndexer.VerseChanged += this.SelectedVerse_Changed;
 
-            Reader.Reader reader = new Reader.Reader(); 
+            Reader.Reader reader = new Reader.Reader();
 
+            reader.BibleBookChanged += this.OnSelectedTabBible_Changed;
+            
             this.uxMainTab.Items.Add(reader);
-
+            
             reader.SetBible(GlobalResources.UserPreferences.DefaultBible);
+
         }
 
+        
     }
 }

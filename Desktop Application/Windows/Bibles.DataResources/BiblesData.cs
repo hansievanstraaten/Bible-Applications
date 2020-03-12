@@ -5,13 +5,12 @@ using System.Threading.Tasks;
 using GeneralExtensions;
 using Bibles.DataResources.Models;
 using System.Collections.Generic;
+using Bibles.Common;
 
 namespace Bibles.DataResources
 {
     public class BiblesData
     {
-        public readonly static string[] KeySplitValue = new string[] { "||" };
-
         private static readonly Lazy<SQLiteAsyncConnection> LazyInitializer = new Lazy<SQLiteAsyncConnection>(() =>
         {
             return new SQLiteAsyncConnection(DbConstraints.DatabasePath, DbConstraints.Flags);
@@ -28,34 +27,6 @@ namespace Bibles.DataResources
         public BiblesData()
         {
             InitializeAsync().SafeFireAndForget(false);
-        }
-
-        public int GetBibleFromKey(string bibleKey)
-        {
-            string[] keySplit = bibleKey.Split(BiblesData.KeySplitValue, StringSplitOptions.RemoveEmptyEntries);
-
-            return keySplit.Length >= 2 ? keySplit[0].ToInt32() : -1;
-        }
-
-        public int GetBookFromKey(string bibleKey)
-        {
-            string[] keySplit = bibleKey.Split(BiblesData.KeySplitValue, StringSplitOptions.RemoveEmptyEntries);
-
-            return keySplit.Length >= 2 ? keySplit[1].ToInt32() : -1;
-        }
-
-        public int GetChapterFromKey(string bibleKey)
-        {
-            string[] keySplit = bibleKey.Split(BiblesData.KeySplitValue, StringSplitOptions.RemoveEmptyEntries);
-
-            return keySplit.Length >= 3 ? keySplit[2].ToInt32() : -1;
-        }
-
-        public int GetVerseFromKey(string bibleKey)
-        {
-            string[] keySplit = bibleKey.Split(BiblesData.KeySplitValue, StringSplitOptions.RemoveEmptyEntries);
-
-            return keySplit.Length >= 4 ? keySplit[3].ToInt32() : -1;
         }
 
         public static BiblesData Database
@@ -114,44 +85,63 @@ namespace Bibles.DataResources
                 .ToListAsync();
         }
 
-        public Task<int> InsertBible(BibleModel bible)
+        public BibleModel GetBible(string bibleName)
         {
-            Task<BibleModel> existing = BiblesData.database.Table<BibleModel>().FirstOrDefaultAsync(b => b.BiblesId == bible.BiblesId);
+            Task<BibleModel> existing = BiblesData.database.Table<BibleModel>().FirstOrDefaultAsync(b => b.BibleName == bibleName);
+
+            return existing.Result;
+        }
+
+        public void InsertBible(BibleModel bible)
+        {
+            Task<BibleModel> existing = BiblesData.database.Table<BibleModel>().FirstOrDefaultAsync(b => b.BibleName == bible.BibleName);
 
             if (existing.Result != null)
             {
-                return Task<int>.Factory.StartNew(() => existing.Result.BiblesId);
+                return;
             }
 
-            return BiblesData.database.InsertAsync(bible);
+            BiblesData.database.InsertAsync(bible);
+        }
+
+        public BibleVerseModel GetVerse(string verseKey)
+        {
+            return BiblesData.database.Table<BibleVerseModel>().FirstOrDefaultAsync(vk => vk.BibleVerseKey == verseKey).Result;
         }
 
         public Dictionary<int, BibleVerseModel> GetVerses(string bibleKey)
         {
-            int bookKey = this.GetChapterFromKey(bibleKey);
+            int bookKey = Formatters.GetChapterFromKey(bibleKey);
 
             if (bookKey < 0)
             {
                 return new Dictionary<int, BibleVerseModel>();
             }
 
+            string searchKey = $"{Formatters.GetBibleFromKey(bibleKey)}||{Formatters.GetBookFromKey(bibleKey)}||{Formatters.GetChapterFromKey(bibleKey)}||";
+
+            // ENG - 1||03O||4||
+            // AFR - 2||03O||4||
+            // GER - 3||03O||4||
+            // XHO - 4||03O||4||
+
             Task<List<BibleVerseModel>> resultList = BiblesData.database
                 .Table<BibleVerseModel>()
-                .Where(v => v.BibleVerseKey.StartsWith(bibleKey))
+                .Where(v => v.BibleVerseKey.StartsWith(searchKey))
                 .ToListAsync();
-
+            
             if (resultList.Result == null)
             {
                 return new Dictionary<int, BibleVerseModel>();
             }
 
             return resultList.Result
-                .ToDictionary(vk => this.GetVerseFromKey(vk.BibleVerseKey));
+                .ToDictionary(vk => Formatters.GetVerseFromKey(vk.BibleVerseKey));
         }
 
         public void InsertBibleVerseBulk(List<BibleVerseModel> verseList)
         {
-            BiblesData.database.InsertAllAsync(verseList);
+            Task<int> result =  BiblesData.database.InsertAllAsync(verseList);
         }
 
         public void InsertBibleVerse(BibleVerseModel verse)
@@ -176,7 +166,7 @@ namespace Bibles.DataResources
             {
                 if (!database.TableMappings.Any(m => m.MappedType.Name == typeof(BibleModel).Name))
                 {
-                    await database.CreateTablesAsync(CreateFlags.None, typeof(BibleModel)).ConfigureAwait(false);
+                    await database.CreateTablesAsync(CreateFlags.AutoIncPK, typeof(BibleModel)).ConfigureAwait(false);
                 }
 
                 if (!database.TableMappings.Any(m => m.MappedType.Name == typeof(BibleVerseModel).Name))
@@ -186,7 +176,7 @@ namespace Bibles.DataResources
 
                 if (!database.TableMappings.Any(u => u.MappedType.Name == typeof(UserPreferenceModel).Name))
                 {
-                    await database.CreateTablesAsync(CreateFlags.None, typeof(UserPreferenceModel)).ConfigureAwait(false);
+                    await database.CreateTablesAsync(CreateFlags.AutoIncPK, typeof(UserPreferenceModel)).ConfigureAwait(false);
                 }
                     
                 BiblesData.IsInitialized = true;

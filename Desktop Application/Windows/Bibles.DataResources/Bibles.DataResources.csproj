@@ -129,9 +129,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Bibles.Common\Bibles.Common.csproj">
+      <Project>{1ab1d3c5-374d-48e6-95fa-36dca0a912af}</Project>
+      <Name>Bibles.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GeneralExtensions\GeneralExtensions.csproj">
       <Project>{df72187c-d643-4e5f-af68-190c023930a9}</Project>
       <Name>GeneralExtensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WPF.Tools\WPF.Tools.csproj">
+      <Project>{53799C60-AA9D-4DEB-86E0-8E70DD1844F3}</Project>
+      <Name>WPF.Tools</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

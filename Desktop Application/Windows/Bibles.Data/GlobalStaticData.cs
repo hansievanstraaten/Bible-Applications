@@ -1,4 +1,5 @@
 ﻿using Bible.Models.BibleBooks;
+using Bibles.Common;
 using Bibles.Data.DataEnums;
 using Bibles.DataResources;
 using GeneralExtensions;
@@ -206,14 +207,14 @@ namespace Bibles.Data
 
         private string GetChapterKey(string key)
         {
-            string[] keyItems = key.Split(BiblesData.KeySplitValue, StringSplitOptions.RemoveEmptyEntries);
+            string[] keyItems = key.Split(Formatters.KeySplitValue, StringSplitOptions.RemoveEmptyEntries);
 
             return $"{keyItems[0]}||{keyItems[1]}||";
         }
 
         private int GetChapterCount(string key)
         {
-            string[] chapterSplit = key.Split(BiblesData.KeySplitValue, StringSplitOptions.RemoveEmptyEntries);
+            string[] chapterSplit = key.Split(Formatters.KeySplitValue, StringSplitOptions.RemoveEmptyEntries);
 
             if (chapterSplit.Length < 2)
             {
@@ -225,7 +226,7 @@ namespace Bibles.Data
 
         private int GetVerseCount(string key)
         {
-            string[] chapterSplit = key.Split(BiblesData.KeySplitValue, StringSplitOptions.RemoveEmptyEntries);
+            string[] chapterSplit = key.Split(Formatters.KeySplitValue, StringSplitOptions.RemoveEmptyEntries);
 
             if (chapterSplit.Length < 3)
             {

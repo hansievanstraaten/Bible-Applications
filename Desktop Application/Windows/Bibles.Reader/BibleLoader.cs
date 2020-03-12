@@ -1,4 +1,5 @@
-﻿using Bibles.DataResources;
+﻿using Bibles.Common;
+using Bibles.DataResources;
 using Bibles.DataResources.Models;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,7 +29,7 @@ namespace Bibles.Reader
             //}
 
 
-            Grid.SetRow(result, (BiblesData.Database.GetVerseFromKey(verse.BibleVerseKey) - 1));
+            Grid.SetRow(result, (Formatters.GetVerseFromKey(verse.BibleVerseKey) - 1));
 
             Grid.SetColumn(result, column);
 
@@ -58,7 +59,7 @@ namespace Bibles.Reader
                 result.Children.Add(children[x]);
             }
 
-            Grid.SetRow(result, (BiblesData.Database.GetVerseFromKey(verse.BibleVerseKey) - 1));
+            Grid.SetRow(result, (Formatters.GetVerseFromKey(verse.BibleVerseKey) - 1));
 
             Grid.SetColumn(result, column);
 
@@ -69,7 +70,7 @@ namespace Bibles.Reader
         {
             UIElement[] result = new UIElement[4];
 
-            Label labelVerse = new Label { Content = BiblesData.Database.GetVerseFromKey(verse.BibleVerseKey), Foreground = Brushes.LightGray, Tag = verse };
+            Label labelVerse = new Label { Content = Formatters.GetVerseFromKey(verse.BibleVerseKey), Foreground = Brushes.LightGray, Tag = verse };
 
             result[0] = labelVerse;
 
