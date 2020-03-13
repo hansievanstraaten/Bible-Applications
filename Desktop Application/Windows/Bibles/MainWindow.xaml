@@ -28,7 +28,10 @@
                 <MenuItem Header="Exit" Click="Exit_Cliked" />
             </MenuItem>
             <MenuItem Header="View">
-                <MenuItem Header="Bibles" x:Name="uxMenuBiles"/>                
+                <MenuItem Header="Bibles" x:Name="uxMenuBiles"/>
+
+                <Separator />
+                <MenuItem Header="Bookmarks" Click="Bookmarks_Cliked" />
             </MenuItem>
         </Menu>
 

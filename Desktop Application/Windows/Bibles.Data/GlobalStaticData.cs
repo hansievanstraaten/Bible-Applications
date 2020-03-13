@@ -183,6 +183,13 @@ namespace Bibles.Data
             }
         }
 
+        public int GetChaptersCount(string bibleKey)
+        {
+            string book = Formatters.GetBookFromKey(bibleKey);
+
+            return this.bookChapterCount[$"{book}||"];
+        }
+
         public int GetChapterVerseCount(string key)
         {
             string[] verseSplit = null;

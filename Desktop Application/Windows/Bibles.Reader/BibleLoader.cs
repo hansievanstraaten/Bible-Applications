@@ -1,8 +1,13 @@
-﻿using Bibles.Common;
+﻿using Bible.Models.Bookmarks;
+using Bibles.Common;
 using Bibles.DataResources;
 using Bibles.DataResources.Models;
+using GeneralExtensions;
+using IconSet;
+using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using WPF.Tools.Specialized;
 
@@ -45,9 +50,22 @@ namespace Bibles.Reader
                 VerticalAlignment = VerticalAlignment.Top
             };
 
+            BibleLoader.RefreshVerseNumberPanel(result, bibleId, verse);
+            
+            Grid.SetRow(result, (Formatters.GetVerseFromKey(verse.BibleVerseKey) - 1));
+
+            Grid.SetColumn(result, column);
+
+            return result;
+        }
+
+        public static void RefreshVerseNumberPanel(StackPanel versePanel, int bibleId, BibleVerseModel verse)
+        {
+            versePanel.Children.Clear();
+
             UIElement[] children = BibleLoader.GetVerseNumberElements(bibleId, verse);
 
-            result.Children.Add(children[0]);
+            versePanel.Children.Add(children[0]);
 
             for (int x = 1; x < children.Length; ++x)
             {
@@ -56,16 +74,14 @@ namespace Bibles.Reader
                     continue;
                 }
 
-                result.Children.Add(children[x]);
+                versePanel.Children.Add(children[x]);
             }
-
-            Grid.SetRow(result, (Formatters.GetVerseFromKey(verse.BibleVerseKey) - 1));
-
-            Grid.SetColumn(result, column);
-
-            return result;
         }
         
+        private static void Bookmark_Selected(object sender, MouseButtonEventArgs e)
+        {
+        }
+
         private static UIElement[] GetVerseNumberElements(int bibleId, BibleVerseModel verse)
         {
             UIElement[] result = new UIElement[4];
@@ -74,7 +90,7 @@ namespace Bibles.Reader
 
             result[0] = labelVerse;
 
-            //result[1] = BibleLoader.GetVerseBookmarkImage(bibleName, verse.VerseKey);
+            result[1] = BibleLoader.GetVerseBookmarkImage(bibleId, verse.BibleVerseKey);
 
             //result[2] = GlobalDictionary.GetStudyBookmarkImage(verse.VerseKey);
 
@@ -83,5 +99,38 @@ namespace Bibles.Reader
             return result;
         }
 
+        private static Image GetVerseBookmarkImage(int bibleId, string verseKey)
+        {
+            string bibleKey = Formatters.IsBiblesKey(verseKey) ?
+                verseKey : $"{bibleId}||{verseKey}";
+
+            BookmarkModel model = BiblesData.Database.GetBookmark(bibleKey);
+
+            if (model == null)
+            {
+                return null;
+            }
+
+            ModelsBookmark bookmark = model.CopyToObject(new ModelsBookmark()).To<ModelsBookmark>();
+
+            string imgToolTip = bookmark.BookMarkName.IsNullEmptyOrWhiteSpace() && bookmark.Description.IsNullEmptyOrWhiteSpace() ?
+            bookmark.SelectedVerse : bookmark.BookMarkName.IsNullEmptyOrWhiteSpace() ?
+            $"{bookmark.SelectedVerse}{Environment.NewLine}{bookmark.Description}" :
+            $"{bookmark.SelectedVerse}{Environment.NewLine}{bookmark.BookMarkName}{Environment.NewLine}{Environment.NewLine}{bookmark.Description}";
+
+            Image img = new Image
+            {
+                Source = IconSets.ResourceImageSource("BookmarkSmall", 16),
+                ToolTip = imgToolTip,
+                Opacity = 0.5,
+                Tag = bibleKey
+            };
+
+            img.PreviewMouseLeftButtonUp += BibleLoader.Bookmark_Selected;
+
+            return img;
+        }
+
+        
     }
 }

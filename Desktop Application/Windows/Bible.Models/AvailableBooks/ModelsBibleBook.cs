@@ -11,7 +11,7 @@ using GeneralExtensions;
 namespace Bible.Models.AvailableBooks
 {
     [ModelNameAttribute("Bibles")]
-    public class BibleBookModel : ModelsBase
+    public class ModelsBibleBook : ModelsBase
     {
         private int bibleId;
 

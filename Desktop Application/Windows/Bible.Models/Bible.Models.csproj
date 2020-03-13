@@ -93,11 +93,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AvailableBooks\BibleBookModel.cs" />
+    <Compile Include="AvailableBooks\ModelsBibleBook.cs" />
     <Compile Include="BibleBooks\BookModel.cs" />
     <Compile Include="BibleBooks\ChapterModel.cs" />
     <Compile Include="BibleBooks\VerseModel.cs" />
-    <Compile Include="Bookmarks\BookmarkModel.cs" />
+    <Compile Include="Bookmarks\ModelsBookmark.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

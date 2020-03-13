@@ -69,6 +69,9 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BookmarksList.xaml.cs">
+      <DependentUpon>BookmarksList.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -120,6 +123,10 @@
       <Project>{cfb74caf-b98c-4387-94e3-ae9afbe16b7e}</Project>
       <Name>ViSo.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ViSo.Dialogs\ViSo.Dialogs.csproj">
+      <Project>{53C1D2AE-46E4-428F-80FB-7E1B238A2276}</Project>
+      <Name>ViSo.Dialogs</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ViSo.SharedEnums\ViSo.SharedEnums.csproj">
       <Project>{44340843-a61b-4a2b-99d8-7142bf456d85}</Project>
       <Name>ViSo.SharedEnums</Name>
@@ -128,6 +135,12 @@
       <Project>{53799c60-aa9d-4deb-86e0-8e70dd1844f3}</Project>
       <Name>WPF.Tools</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="BookmarksList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

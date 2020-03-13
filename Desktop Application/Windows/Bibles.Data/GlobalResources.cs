@@ -12,10 +12,10 @@ namespace Bibles.Data
                 return BiblesData.Database.GetPreferences().Result;
             }
 
-            set
-            {
-                BiblesData.Database.InsertserPreference(value);
-            }
+            //set
+            //{
+            //    BiblesData.Database.InsertserPreference(value);
+            //}
         }
     }
 }

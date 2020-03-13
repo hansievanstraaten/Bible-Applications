@@ -16,5 +16,7 @@ namespace Bibles.DataResources.Models
         public string Font { get; set; }
 
         public int FontSize { get; set; }
+
+        public string LastReadVerse { get; set; }
     }
 }

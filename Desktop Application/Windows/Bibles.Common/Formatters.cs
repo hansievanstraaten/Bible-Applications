@@ -1,5 +1,6 @@
 ﻿using GeneralExtensions;
 using System;
+using System.Collections.Generic;
 
 namespace Bibles.Common
 {
@@ -7,6 +8,13 @@ namespace Bibles.Common
     {
         public readonly static string[] KeySplitValue = new string[] { "||" };
 
+        public static bool IsBiblesKey(string key)
+        {
+            string[] keyItems = null;
+
+            return Formatters.IsBiblesKey(key, out keyItems);
+        }
+        
         public static bool IsBiblesKey(string key, out string[] keyItems)
         {
             keyItems = key.Split(Formatters.KeySplitValue, StringSplitOptions.RemoveEmptyEntries);
@@ -32,19 +40,17 @@ namespace Bibles.Common
 
             return keySplit.Length >= 1 ? keySplit[0].ToInt32() : -1;
         }
-
-        public static string GetBookFromKey(string bibleKey)
-        {
-            string[] keySplit = Formatters.CreateBibleKeySplit(bibleKey);
-
-            return keySplit.Length >= 2 ? keySplit[1] : string.Empty;
-        }
-
+        
         public static int GetChapterFromKey(string bibleKey)
         {
-            string[] keySplit = Formatters.CreateBibleKeySplit(bibleKey);
+            string[] keySplit = null;
 
-            return keySplit.Length >= 3 ? keySplit[2].ToInt32() : -1;
+            bool isBibleKey = Formatters.IsBiblesKey(bibleKey, out keySplit);
+            
+            return isBibleKey ?
+                keySplit.Length >= 3 ? keySplit[2].ToInt32() : -1
+                :
+                keySplit.Length >= 2 ? keySplit[1].ToInt32() : -1;
         }
 
         public static int GetVerseFromKey(string bibleKey)
@@ -53,6 +59,72 @@ namespace Bibles.Common
          
             return keySplit.Length >= 4 ? keySplit[3].ToInt32() : -1;
         }
+        
+        public static string GetBookFromKey(string bibleKey)
+        {
+            string[] keySplit = null;
+
+            bool isBibleKey = Formatters.IsBiblesKey(bibleKey, out keySplit);
+
+            return isBibleKey ?
+                keySplit.Length >= 2 ? keySplit[1] : string.Empty
+                :
+                keySplit.Length >= 1 ? keySplit[0] : string.Empty;
+        }
+
+        public static string ChangeBible(string bibleKey, int bibleId)
+        {
+            string[] splitkeys = null;
+
+            if (Formatters.IsBiblesKey(bibleKey, out splitkeys))
+            {
+                splitkeys[0] = bibleId.ToString();
+
+                return splitkeys.Concatenate("||");
+            }
+
+            List<string> splitList = new List<string>();
+
+            splitList.Add(bibleId.ToString());
+
+            splitList.AddRange(splitkeys);
+
+            return splitList.ToArray().Concatenate("||");
+        }
+
+        public static string ChangeChapter(string bibleKey, int nextChapter)
+        {
+            string[] splitkeys = null;
+
+            if (Formatters.IsBiblesKey(bibleKey, out splitkeys))
+            {
+                splitkeys[2] = nextChapter.ToString();
+
+                return splitkeys.Concatenate("||");
+            }
+
+            splitkeys[1] = nextChapter.ToString();
+
+            return splitkeys.Concatenate("||");
+        }
+
+        public static string ChangeVerse(string bibleKey, int nextVerse)
+        {
+            string[] keyItems = null;
+
+            bool isBibleKey = Formatters.IsBiblesKey(bibleKey, out keyItems);
+
+            if ((isBibleKey && keyItems.Length < 4)
+                || (!isBibleKey && keyItems.Length < 3))
+            {
+                return bibleKey;
+            }
+
+            keyItems[keyItems.Length - 1] = nextVerse.ToString();
+
+            return keyItems.Concatenate("||");
+        }
+
 
         public static string RemoveBibleId(string bibleKey)
         {

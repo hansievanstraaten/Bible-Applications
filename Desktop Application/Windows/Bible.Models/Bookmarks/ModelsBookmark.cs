@@ -1,7 +1,9 @@
 ﻿using Bibles.Common;
+using Bibles.DataResources;
 using GeneralExtensions;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using WPF.Tools.Attributes;
 using WPF.Tools.BaseClasses;
 using WPF.Tools.ModelViewer;
@@ -10,17 +12,21 @@ using WPF.Tools.ToolModels;
 namespace Bible.Models.Bookmarks
 {
     [ModelNameAttribute("Bookmark")]
-    public class BookmarkModel : ModelsBase
+    public class ModelsBookmark : ModelsBase
     {
         private string bookMarkName;
+
+        private string bibleName;
 
         private string description;
         
         private string selectedVerse;
         
-        private string verseRangeEnd;
+        private int verseRangeEnd;
         
         private DateTime bookmarkDate;
+
+        public string VerseKey { get; set; }
 
         [FieldInformationAttribute("Name", Sort = 1)]
         public string BookMarkName 
@@ -35,6 +41,21 @@ namespace Bible.Models.Bookmarks
                 this.bookMarkName = value;
 
                 base.OnPropertyChanged(() => this.BookMarkName);
+            }
+        }
+
+        public string BibleName
+        {
+            get
+            {
+                return this.bibleName;
+            }
+
+            set
+            {
+                this.bibleName = value;
+
+                base.OnPropertyChanged(() => this.BibleName);
             }
         }
 
@@ -74,7 +95,7 @@ namespace Bible.Models.Bookmarks
         [FieldInformationAttribute("To Verse", Sort = 4)]
         [ValuesSource("ToVersesRange")]
         [ItemType(ModelItemTypeEnum.ComboBox, IsComboboxEditable = false)]
-        public string VerseRangeEnd
+        public int VerseRangeEnd
         {
             get
             {
@@ -85,10 +106,41 @@ namespace Bible.Models.Bookmarks
             {
                 this.verseRangeEnd = value;
 
-                base.OnPropertyChanged(this.VerseRangeEnd);
+                base.OnPropertyChanged(() => this.VerseRangeEnd);
+
+                base.OnPropertyChanged(() => this.VerseText);
             }
         }
     
+        public string VerseText
+        {
+            get
+            {
+                StringBuilder result = new StringBuilder();
+
+                int verseNumber = Formatters.GetVerseFromKey(this.VerseKey);
+                
+                result.AppendLine($"{verseNumber}. {BiblesData.Database.GetVerse(this.VerseKey).VerseText}");
+                
+                if (this.VerseRangeEnd > verseNumber)
+                {
+                    string mainKey = $"{Formatters.GetBibleFromKey(this.VerseKey)}||{Formatters.GetBookFromKey(this.VerseKey)}||{Formatters.GetChapterFromKey(this.VerseKey)}||";
+
+                    while (verseNumber < this.VerseRangeEnd)
+                    {
+                        ++verseNumber;
+                        
+                        result.AppendLine();
+
+                        string itemKey = $"{mainKey}{verseNumber}||";
+
+                        result.AppendLine($"{verseNumber}. {BiblesData.Database.GetVerse(itemKey).VerseText}");
+                    }                }
+
+                return result.ToString();
+            }
+        }
+
         public DateTime BookmarkDate
         {
             get
@@ -113,10 +165,16 @@ namespace Bible.Models.Bookmarks
     
         public void SetVerse(string verseKey)
         {
+            this.VerseKey = verseKey;
+
             this.SelectedVerse = this.InvokeMethod("Bibles.Data.GlobalInvokeData,Bibles.Data", "GetKeyDescription", new object[] { verseKey }).ParseToString();
 
-            int chapterVerseCount = this.InvokeMethod("Bibles.Data.GlobalInvokeData,Bibles.Data", "GetChapterVerseCount", new object[] { verseKey }).ToInt32();
+            int bibleId = Formatters.GetBibleFromKey(verseKey);
 
+            this.BibleName = this.InvokeMethod("Bibles.Data.GlobalInvokeData,Bibles.Data", "GetBibleName", new object[] { bibleId }).ParseToString();
+
+            int chapterVerseCount = this.InvokeMethod("Bibles.Data.GlobalInvokeData,Bibles.Data", "GetChapterVerseCount", new object[] { verseKey }).ToInt32();
+            
             int selectedVerse = Formatters.GetVerseFromKey(verseKey);
 
             List<DataItemModel> toRangeList = new List<DataItemModel>();
@@ -129,7 +187,6 @@ namespace Bible.Models.Bookmarks
             }
 
             this.ToVersesRange = toRangeList.ToArray();
-            //Formatters.GetBibleFromKey
         }
     }
 }

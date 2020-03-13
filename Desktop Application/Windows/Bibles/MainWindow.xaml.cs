@@ -1,5 +1,7 @@
 ﻿using Bible.Models.AvailableBooks;
+using Bible.Models.Bookmarks;
 using Bibles.BookIndex;
+using Bibles.Bookmarks;
 using Bibles.Common;
 using Bibles.Data;
 using Bibles.DataResources;
@@ -7,10 +9,12 @@ using Bibles.DataResources.Models;
 using GeneralExtensions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using ViSo.Dialogs.Controls;
 using WPF.Tools.BaseClasses;
 using WPF.Tools.TabControl;
 
@@ -31,11 +35,42 @@ namespace Bibles
 
             this.uxMessageLable.Content = "Loading…";
 
-             InitializeData initialData = new InitializeData();
+            //this.Loaded += this.MainWindow_Loaded;
+
+            this.Closing += this.MainWindow_Closing;
+
+            InitializeData initialData = new InitializeData();
 
             initialData.InitialDataLoadCompleted += this.InitialDataLoad_Completed;
 
             initialData.LoadEmbeddedBibles(this.Dispatcher, Application.Current.MainWindow.FontFamily);
+        }
+
+        #region MAIN WINDOW EVENTS
+
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            try
+            {
+                UserPreferenceModel preference = GlobalResources.UserPreferences;
+
+                string biblesKey = ((Reader.Reader)this.uxMainTab.Items[0]).SelectedVerseKey;
+
+                if (!Formatters.IsBiblesKey(biblesKey))
+                {
+                    int biblesId = ((Reader.Reader)this.uxMainTab.Items[0]).Bible.BibleId;
+
+                    biblesKey = Formatters.ChangeBible(biblesKey, biblesId);
+                }
+
+                preference.LastReadVerse = biblesKey;
+
+                BiblesData.Database.InsertserPreference(preference);
+            }
+            catch (Exception err)
+            {
+                // DO NOTHING
+            }
         }
 
         private void InitialDataLoad_Completed(object sender, string message, bool completed, Exception error)
@@ -54,6 +89,17 @@ namespace Bibles
                     this.InitializeTabs();
 
                     this.LoadDynamicMenus();
+
+                    this.selectedItemKey = GlobalResources.UserPreferences.LastReadVerse;
+
+                    int bibleId = !this.selectedItemKey.IsNullEmptyOrWhiteSpace() && Formatters.IsBiblesKey(this.selectedItemKey) ?
+                        Formatters.GetBibleFromKey(this.selectedItemKey)
+                        :
+                        GlobalResources.UserPreferences.DefaultBible;
+                    
+                    ((Reader.Reader)this.uxMainTab.Items[0]).SetBible(bibleId);
+
+                    ((Reader.Reader)this.uxMainTab.Items[0]).SetVerse(this.selectedItemKey);
                 }
                 else
                 {
@@ -98,11 +144,28 @@ namespace Bibles
             }
         }
 
-        private void OnSelectedTabBible_Changed(object sender, BibleBookModel bible)
+        private void OnSelectedTabBible_Changed(object sender, ModelsBibleBook bible)
         {
             try
             {
                 this.uxMainTab.SetHeaderName(this.uxMainTab.SelectedIndex, bible.BibleName);
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
+        }
+
+        private void OnReaderSelectedVerse_Changed(object sender, BibleVerseModel verse)
+        {
+            try
+            {
+                this.selectedItemKey = verse.BibleVerseKey;
+
+                if (GlobalResources.UserPreferences.SynchronizzeTabs)
+                {
+
+                }
             }
             catch (Exception err)
             {
@@ -126,6 +189,10 @@ namespace Bibles
             }
         }
 
+        #endregion
+
+        #region MENU ITEM EVENTS
+
         private void Exit_Cliked(object sender, RoutedEventArgs e)
         {
             this.Dispatcher.InvokeShutdown();
@@ -137,24 +204,44 @@ namespace Bibles
             {
                 MenuItem item = (MenuItem)sender;
 
-                Reader.Reader reader = new Reader.Reader { ShowCloseButton = true };
-
-                reader.BibleBookChanged += this.OnSelectedTabBible_Changed;
-
-                this.uxMainTab.Items.Add(reader);
-
-                reader.SetBible(item.Tag.ToInt32());
-
-                reader.SetChapter(this.selectedItemKey);
-
-                reader.SetVerse(this.selectedItemKey);
+                this.LoadReader(item.Tag.ToInt32(), this.selectedItemKey);
             }
             catch (Exception err)
             {
                 ErrorLog.ShowError(err);
             }
         }
-        
+   
+        private void Bookmarks_Cliked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                BookmarksList bookmarks = new BookmarksList();
+
+                bookmarks.BookmarkReaderRequest += this.BookmarkReader_Request;
+
+                ControlDialog.Show("Bookmarks", bookmarks, string.Empty, this, true);
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
+        }
+
+        private void BookmarkReader_Request(object sender, ModelsBookmark bookmark)
+        {
+            try
+            {
+                this.LoadReader(Formatters.GetBibleFromKey(bookmark.VerseKey), bookmark.VerseKey);
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
+        }
+
+        #endregion
+
         private void LoadDynamicMenus()
         {
             Task<List<BibleModel>> biblesTask = BiblesData.Database.GetBibles();
@@ -177,14 +264,40 @@ namespace Bibles
 
             this.uxIndexer.VerseChanged += this.SelectedVerse_Changed;
 
-            Reader.Reader reader = new Reader.Reader();
+            Reader.Reader reader = this.CreateReader(false);
+
+            this.uxMainTab.Items.Add(reader);
+        }
+
+        private void LoadReader(int bibleId, string verseKey)
+        {
+            Reader.Reader reader = this.CreateReader(true);
+
+            this.uxMainTab.Items.Add(reader);
+
+            reader.SetBible(bibleId);
+
+            if (!verseKey.IsNullEmptyOrWhiteSpace())
+            {
+                string bibleKey = Formatters.ChangeBible(verseKey, bibleId);
+
+                reader.SetChapter(bibleKey);
+
+                reader.SetVerse(bibleKey);
+            }
+        }
+
+        private Reader.Reader CreateReader(bool showCloseButton)
+        {
+            Reader.Reader reader = new Reader.Reader { ShowCloseButton = showCloseButton };
 
             reader.BibleBookChanged += this.OnSelectedTabBible_Changed;
-            
-            this.uxMainTab.Items.Add(reader);
-            
-            reader.SetBible(GlobalResources.UserPreferences.DefaultBible);
 
+            reader.SelectedVerseChanged += this.OnReaderSelectedVerse_Changed;
+
+            return reader;
         }
+
+        
     }
 }

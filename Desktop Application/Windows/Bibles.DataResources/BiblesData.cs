@@ -48,6 +48,8 @@ namespace Bibles.DataResources
             }
         }
 
+        #region USERPREFERENCEMODEL
+
         public Task<UserPreferenceModel> GetPreferences()
         {
             Task<UserPreferenceModel> result = BiblesData.database.Table<UserPreferenceModel>().FirstOrDefaultAsync();
@@ -74,15 +76,28 @@ namespace Bibles.DataResources
 
             existing.Result.FontSize = userPreference.FontSize;
 
+            existing.Result.LastReadVerse = userPreference.LastReadVerse;
+
             BiblesData.database.UpdateAsync(existing.Result);
 
             return Task<int>.Factory.StartNew(() => existing.Result.UserId);
         }
 
+        #endregion
+
+        #region BIBLEMODEL
+
         public Task<List<BibleModel>> GetBibles()
         {
             return BiblesData.database.Table<BibleModel>()
                 .ToListAsync();
+        }
+
+        public string GetBibleName(int bibleId)
+        {
+            Task<BibleModel> model = BiblesData.database.Table<BibleModel>().FirstOrDefaultAsync(bi => bi.BiblesId == bibleId);
+
+            return model.Result == null ? string.Empty : model.Result.BibleName;
         }
 
         public BibleModel GetBible(string bibleName)
@@ -103,6 +118,10 @@ namespace Bibles.DataResources
 
             BiblesData.database.InsertAsync(bible);
         }
+
+        #endregion
+
+        #region BIBLEVERSEMODEL
 
         public BibleVerseModel GetVerse(string verseKey)
         {
@@ -160,23 +179,73 @@ namespace Bibles.DataResources
             BiblesData.database.InsertAsync(verse);
         }
 
+        #endregion
+
+        #region BOOKMARKMODEL
+
+        public List<BookmarkModel> GetBookmarks()
+        {
+            return BiblesData.database.Table<BookmarkModel>().ToListAsync().Result;
+        }
+
+        public BookmarkModel GetBookmark(string verseKey)
+        {
+            Task<BookmarkModel> existing = BiblesData.database.Table<BookmarkModel>()
+                .FirstOrDefaultAsync(bm => bm.VerseKey == verseKey);
+
+            return existing.Result;
+        }
+
+        public void InsertBookmarkModel(BookmarkModel bookmark)
+        {
+            Task<BookmarkModel> existing = BiblesData.database.Table<BookmarkModel>()
+                .FirstOrDefaultAsync(bm => bm.VerseKey == bookmark.VerseKey);
+
+            if (existing.Result == null)
+            {
+                BiblesData.database.InsertAsync(bookmark);
+            }
+            else
+            {
+                existing.Result.BookMarkName = bookmark.BookMarkName;
+
+                existing.Result.Description = bookmark.Description;
+
+                existing.Result.VerseRangeEnd = bookmark.VerseRangeEnd;
+
+                BiblesData.database.UpdateAsync(existing.Result);
+            }
+        }
+
+        public void DeleteBookmark(string bibleVerseKey)
+        {
+            BiblesData.database.Table<BookmarkModel>().DeleteAsync(b => b.VerseKey == bibleVerseKey);
+        }
+
+        #endregion
+
         private async Task InitializeAsync()
         {
             if (!BiblesData.IsInitialized)
             {
-                if (!database.TableMappings.Any(m => m.MappedType.Name == typeof(BibleModel).Name))
+                if (!database.TableMappings.Any(bi => bi.MappedType.Name == typeof(BibleModel).Name))
                 {
                     await database.CreateTablesAsync(CreateFlags.AutoIncPK, typeof(BibleModel)).ConfigureAwait(false);
                 }
 
-                if (!database.TableMappings.Any(m => m.MappedType.Name == typeof(BibleVerseModel).Name))
+                if (!database.TableMappings.Any(bv => bv.MappedType.Name == typeof(BibleVerseModel).Name))
                 {
                     await database.CreateTablesAsync(CreateFlags.None, typeof(BibleVerseModel)).ConfigureAwait(false);
                 }
 
-                if (!database.TableMappings.Any(u => u.MappedType.Name == typeof(UserPreferenceModel).Name))
+                if (!database.TableMappings.Any(up => up.MappedType.Name == typeof(UserPreferenceModel).Name))
                 {
                     await database.CreateTablesAsync(CreateFlags.AutoIncPK, typeof(UserPreferenceModel)).ConfigureAwait(false);
+                }
+
+                if (!database.TableMappings.Any(bm => bm.MappedType.Name == typeof(BookmarkModel).Name))
+                {
+                    await database.CreateTablesAsync(CreateFlags.None, typeof(BookmarkModel)).ConfigureAwait(false);
                 }
                     
                 BiblesData.IsInitialized = true;
