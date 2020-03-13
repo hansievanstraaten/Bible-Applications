@@ -97,9 +97,14 @@
     <Compile Include="BibleBooks\BookModel.cs" />
     <Compile Include="BibleBooks\ChapterModel.cs" />
     <Compile Include="BibleBooks\VerseModel.cs" />
+    <Compile Include="Bookmarks\BookmarkModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Bibles.Common\Bibles.Common.csproj">
+      <Project>{1AB1D3C5-374D-48E6-95FA-36DCA0A912AF}</Project>
+      <Name>Bibles.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Bibles.DataResources\Bibles.DataResources.csproj">
       <Project>{1d25ca61-d07c-47e4-96cb-bee25d82c0f7}</Project>
       <Name>Bibles.DataResources</Name>

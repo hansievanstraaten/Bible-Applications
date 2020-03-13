@@ -183,11 +183,44 @@ namespace Bibles.Data
             }
         }
 
+        public int GetChapterVerseCount(string key)
+        {
+            string[] verseSplit = null;
+
+            bool isBbleKey = Formatters.IsBiblesKey(key, out verseSplit);
+
+            string searchKey = isBbleKey ?
+                $"{verseSplit[1]}||{verseSplit[2]}||"
+                :
+                $"{verseSplit[0]}||{verseSplit[1]}||";
+
+            return chapterVerseCount[searchKey];
+        }
+
         public string GetBookName(string key)
         {
             return keyToBookIndex[this.GetBookKey(key)];
         }
         
+        public string GetKeyDescription(string unknownKey)
+        {
+            string[] keyItems = unknownKey.Split(Formatters.KeySplitValue, StringSplitOptions.RemoveEmptyEntries);
+
+            // Bible Key's start with the Bible index First
+            // Book keys constains an O or N for Old or New Testaments
+            int indexOffset = keyItems[0].IsNumberic() ? 1 : 0;
+
+            string bookKey = $"{keyItems[indexOffset]}||";
+                        
+            string bookName = keyItems.Length >= (indexOffset + 1) ? GlobalStaticData.Intance.GetBookName(bookKey) : string.Empty;
+
+            string chapter = keyItems.Length >= (indexOffset + 2) ? $" - {keyItems[(indexOffset + 1)]}" : string.Empty;
+
+            string verse = keyItems.Length >= (indexOffset + 3) ? $":{keyItems[(indexOffset + 2)]}" : string.Empty;
+
+            return $"{bookName}{chapter}{verse}";
+        }
+
         public List<BookModel> GetTestament(TestamentEnum testament)
         {
             string endString = $"{testament}||";

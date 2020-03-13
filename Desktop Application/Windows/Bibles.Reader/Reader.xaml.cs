@@ -1,13 +1,17 @@
 ﻿using Bible.Models.AvailableBooks;
+using Bible.Models.Bookmarks;
 using Bibles.Common;
 using Bibles.Data;
 using Bibles.DataResources;
 using Bibles.DataResources.Models;
+using GeneralExtensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using ViSo.Dialogs.ModelViewer;
+using ViSo.Dialogs.TextEditor;
 using WPF.Tools.BaseClasses;
 using WPF.Tools.Specialized;
 
@@ -89,7 +93,46 @@ namespace Bibles.Reader
         {
             try
             {
+                int selectedVerse = Formatters.GetVerseFromKey(this.selectedKey);
 
+                if (selectedVerse <= 0)
+                {
+                    throw new ApplicationException("Please select a Verse.");
+                }
+
+                BookmarkModel bookmark = new BookmarkModel();
+
+                bookmark.SetVerse(this.selectedKey);
+
+                ModelView.OnItemBrowse += this.BookmarkModel_Browse;
+
+                if (ModelView.ShowDialog("Bookmark", bookmark).IsFalse())
+                {
+                    return;
+                }
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
+            finally
+            {
+                ModelView.OnItemBrowse -= this.BookmarkModel_Browse;
+            }
+        }
+
+        private void BookmarkModel_Browse(object sender, object model, string buttonKey)
+        {
+            try
+            {
+                BookmarkModel bookmark = (BookmarkModel)model;
+
+                if (TextEditing.ShowDialog("Bookmark Description", bookmark.Description).IsFalse())
+                {
+                    return;
+                }
+
+                bookmark.Description = TextEditing.Text;
             }
             catch (Exception err)
             {
@@ -175,13 +218,7 @@ namespace Bibles.Reader
 
         private void SetHeader()
         {
-            string[] keyItems = this.selectedKey.Split(Formatters.KeySplitValue, StringSplitOptions.RemoveEmptyEntries);
-
-            string chapter = keyItems.Length >= 2 ? $" - {keyItems[1]}" : string.Empty;
-
-            string verse = keyItems.Length >= 3 ? $":{keyItems[2]}" : string.Empty;
-
-            this.uxBible[0].Header = $"{GlobalStaticData.Intance.GetBookName(this.selectedKey)}{chapter}{verse}";
+            this.uxBible[0].Header = GlobalStaticData.Intance.GetKeyDescription(this.selectedKey);
         }
 
         public void LoadVerses()
@@ -220,7 +257,11 @@ namespace Bibles.Reader
 
             this.uxVerseGrid.RowDefinitions.Clear();
 
-            for(int x = 0; x < this.versesDictionary.Count; ++x)
+            this.uxBookmark.IsEnabled = this.versesDictionary.Count > 0;
+
+            this.uxLink.IsEnabled = this.versesDictionary.Count > 0;
+
+            for (int x = 0; x < this.versesDictionary.Count; ++x)
             {
                 this.uxVerseGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(26, GridUnitType.Auto) });
             }

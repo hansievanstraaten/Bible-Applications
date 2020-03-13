@@ -96,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataEnums\KeyEnums.cs" />
+    <Compile Include="GlobalInvokeData.cs" />
     <Compile Include="GlobalResources.cs" />
     <Compile Include="GlobalStaticData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -165,6 +165,10 @@
       <Project>{cfb74caf-b98c-4387-94e3-ae9afbe16b7e}</Project>
       <Name>ViSo.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ViSo.Dialogs\ViSo.Dialogs.csproj">
+      <Project>{53c1d2ae-46e4-428f-80fb-7e1b238a2276}</Project>
+      <Name>ViSo.Dialogs</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ViSo.SharedEnums\ViSo.SharedEnums.csproj">
       <Project>{44340843-a61b-4a2b-99d8-7142bf456d85}</Project>
       <Name>ViSo.SharedEnums</Name>
