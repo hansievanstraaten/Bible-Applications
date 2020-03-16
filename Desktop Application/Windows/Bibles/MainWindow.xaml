@@ -29,7 +29,7 @@
             </MenuItem>
             <MenuItem Header="View">
                 <MenuItem Header="Bibles" x:Name="uxMenuBiles"/>
-
+                <MenuItem Header="Parallel Reader" Click="ParallelReader_Cliked" />
                 <Separator />
                 <MenuItem Header="Bookmarks" Click="Bookmarks_Cliked" />
             </MenuItem>

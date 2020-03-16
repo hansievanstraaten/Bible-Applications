@@ -23,9 +23,13 @@ namespace Bibles.Reader
     /// </summary>
     public partial class Reader : UserControlBase
     {
+        public delegate void ScrollChangedEvent(object sender, ScrollChangedEventArgs e);
+
         public delegate void BibleBookChangedEvent(object sender, ModelsBibleBook bible);
 
         public delegate void SelectedVerseChangedEvent(object sender, BibleVerseModel verse);
+
+        public event ScrollChangedEvent ScrollChanged;
 
         public event BibleBookChangedEvent BibleBookChanged;
 
@@ -330,6 +334,11 @@ namespace Bibles.Reader
             {
                 ErrorLog.ShowError(err);
             }
+        }
+
+        private void Scroll_Changed(object sender, ScrollChangedEventArgs e)
+        {
+            this.ScrollChanged?.Invoke(this, e);
         }
 
         private void SetHeader()

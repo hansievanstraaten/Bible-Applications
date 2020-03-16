@@ -6,6 +6,7 @@ using Bibles.Common;
 using Bibles.Data;
 using Bibles.DataResources;
 using Bibles.DataResources.Models;
+using Bibles.Reader;
 using GeneralExtensions;
 using System;
 using System.Collections.Generic;
@@ -240,6 +241,33 @@ namespace Bibles
             }
         }
 
+        private void ParallelReader_Cliked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int bibleId = Formatters.GetBibleFromKey(this.selectedItemKey);
+
+                if (bibleId <= 0)
+                {
+                    bibleId = GlobalResources.UserPreferences.DefaultBible;
+                }
+
+                ParallelReader reader = new ParallelReader { ShowCloseButton = true };
+
+                reader.SetBible(bibleId);
+
+                reader.SetChapter(this.selectedItemKey);
+
+                reader.SetVerse(this.selectedItemKey);
+
+                this.uxMainTab.Items.Add(reader);
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
+        }
+
         #endregion
 
         private void LoadDynamicMenus()
@@ -297,7 +325,5 @@ namespace Bibles
 
             return reader;
         }
-
-        
     }
 }

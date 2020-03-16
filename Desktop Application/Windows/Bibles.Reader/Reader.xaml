@@ -36,7 +36,7 @@
             <CommonControls:ActionButton ResourceImageName="ArrowRight" x:Name="uxRightButton" VerticalAlignment="Bottom" ToolTip="Next Chapter" Click="Right_Cliked" />
         </StackPanel>
 
-        <ScrollViewer Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" x:Name="uxVerseGridScroll">
+        <ScrollViewer Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" x:Name="uxVerseGridScroll" ScrollChanged="Scroll_Changed">
             <Grid x:Name="uxVerseGrid" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />

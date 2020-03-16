@@ -101,6 +101,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BibleLoader.cs" />
+    <Compile Include="ParallelReader.xaml.cs">
+      <DependentUpon>ParallelReader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -127,6 +130,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="ParallelReader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Reader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
