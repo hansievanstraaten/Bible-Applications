@@ -6,6 +6,7 @@ using GeneralExtensions;
 using Bibles.DataResources.Models;
 using System.Collections.Generic;
 using Bibles.Common;
+using Bible.Models.Link;
 
 namespace Bibles.DataResources
 {
@@ -148,7 +149,7 @@ namespace Bibles.DataResources
                 .Table<BibleVerseModel>()
                 .Where(v => v.BibleVerseKey.StartsWith(searchKey))
                 .ToListAsync();
-            
+
             if (resultList.Result == null)
             {
                 return new Dictionary<int, BibleVerseModel>();
@@ -160,7 +161,7 @@ namespace Bibles.DataResources
 
         public void InsertBibleVerseBulk(List<BibleVerseModel> verseList)
         {
-            Task<int> result =  BiblesData.database.InsertAllAsync(verseList);
+            Task<int> result = BiblesData.database.InsertAllAsync(verseList);
         }
 
         public void InsertBibleVerse(BibleVerseModel verse)
@@ -224,6 +225,127 @@ namespace Bibles.DataResources
 
         #endregion
 
+        #region LINK
+
+        private static List<string> linkedList = new List<string>();
+
+        private static char[] linkSplit = new char[] { '*'};
+
+        public bool HaveLink(string bibleKey)
+        {
+            Task<LinkModel> result = BiblesData.database
+                .Table<LinkModel>()
+                .FirstOrDefaultAsync(li => li.LinkKeyId.Contains(bibleKey));
+
+            return result.Result != null;
+        }
+
+        public string GetLinkComments(string bibleKey)
+        {
+            Task<LinkModel> result = BiblesData.database
+                .Table<LinkModel>()
+                .FirstOrDefaultAsync(li => li.LinkKeyId.Contains(bibleKey));
+
+            return result.Result.Comments;
+        }
+
+        public void SaveLinkComments(string bibleKey, string comments)
+        {
+            Task<LinkModel> result = BiblesData.database
+                .Table<LinkModel>()
+                .FirstOrDefaultAsync(li => li.LinkKeyId.Contains(bibleKey));
+
+            result.Result.Comments = comments;
+
+            BiblesData.database.UpdateAsync(result.Result);
+        }
+
+        public ModelsLink GetLinkTree(string bibleKey)
+        {
+            try
+            {
+                return this.GetLinkedVerses(bibleKey);
+            }
+            finally
+            {
+                BiblesData.linkedList.Clear();
+            }
+        }
+
+        private ModelsLink GetLinkedVerses(string bibleKey)
+        {
+            BiblesData.linkedList.Add(bibleKey);
+
+            string parentKey = $"{bibleKey}*";
+
+            string childKey = $"*{bibleKey}";
+
+            Task<List<LinkModel>> parentToChild = BiblesData.database
+                .Table<LinkModel>()
+                .Where(pl => pl.LinkKeyId.StartsWith(parentKey))
+                .ToListAsync();
+
+            Task<List<LinkModel>> childToParent = BiblesData.database
+                .Table<LinkModel>()
+                .Where(pl => pl.LinkKeyId.EndsWith(childKey))
+                .ToListAsync();
+
+            ModelsLink results = new ModelsLink { BibleVerseKey = bibleKey };
+
+            foreach(LinkModel model in parentToChild.Result)
+            {
+                string[] verseSplit = model.LinkKeyId.Split(linkSplit);
+
+                if (BiblesData.linkedList.Contains(verseSplit[1]))
+                {
+                    continue;
+                }
+
+                ModelsLink child = new ModelsLink { BibleVerseKey = verseSplit[1], LinkKeyId = model.LinkKeyId };
+
+                child.BibleVerseChildLinks.AddRange(this.GetLinkedVerses(verseSplit[1]).BibleVerseChildLinks);
+
+                results.BibleVerseChildLinks.Add(child);
+            }
+
+            foreach (LinkModel model in childToParent.Result)
+            {
+                string[] verseSplit = model.LinkKeyId.Split(linkSplit);
+
+                if (BiblesData.linkedList.Contains(verseSplit[0]))
+                {
+                    continue;
+                }
+
+                ModelsLink child = new ModelsLink { BibleVerseKey = verseSplit[0], LinkKeyId = model.LinkKeyId };
+
+                child.BibleVerseChildLinks.AddRange(this.GetLinkedVerses(verseSplit[0]).BibleVerseChildLinks);
+
+                results.BibleVerseChildLinks.Add(child);
+            }
+
+            return results;
+        }
+
+        public void CreateLink (LinkModel link)
+        {
+            Task<LinkModel> exising = BiblesData.database.Table<LinkModel>().FirstOrDefaultAsync(li => li.LinkKeyId == link.LinkKeyId);
+
+            if (exising.Result != null)
+            {
+                return;
+            }
+
+            BiblesData.database.InsertAsync(link);
+        }
+        
+        public void DeleteLink(string linkKeyId)
+        {
+            BiblesData.database.Table<LinkModel>().DeleteAsync(b => b.LinkKeyId == linkKeyId);
+        }
+
+        #endregion
+
         private async Task InitializeAsync()
         {
             if (!BiblesData.IsInitialized)
@@ -246,6 +368,11 @@ namespace Bibles.DataResources
                 if (!database.TableMappings.Any(bm => bm.MappedType.Name == typeof(BookmarkModel).Name))
                 {
                     await database.CreateTablesAsync(CreateFlags.None, typeof(BookmarkModel)).ConfigureAwait(false);
+                }
+
+                if (!database.TableMappings.Any(li => li.MappedType.Name == typeof(LinkModel).Name))
+                {
+                    await database.CreateTablesAsync(CreateFlags.ImplicitIndex, typeof(LinkModel)).ConfigureAwait(false);
                 }
                     
                 BiblesData.IsInitialized = true;

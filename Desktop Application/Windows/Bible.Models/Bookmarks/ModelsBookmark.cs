@@ -1,5 +1,4 @@
 ﻿using Bibles.Common;
-using Bibles.DataResources;
 using GeneralExtensions;
 using System;
 using System.Collections.Generic;
@@ -116,12 +115,14 @@ namespace Bible.Models.Bookmarks
         {
             get
             {
+                string verseAssembly = "Bibles.Data.GlobalInvokeData,Bibles.Data";
+
                 StringBuilder result = new StringBuilder();
 
                 int verseNumber = Formatters.GetVerseFromKey(this.VerseKey);
-                
-                result.AppendLine($"{verseNumber}. {BiblesData.Database.GetVerse(this.VerseKey).VerseText}");
-                
+
+                result.AppendLine($"{verseNumber}. {this.InvokeMethod(verseAssembly, "GetVerse", new object[] { this.VerseKey })}");
+
                 if (this.VerseRangeEnd > verseNumber)
                 {
                     string mainKey = $"{Formatters.GetBibleFromKey(this.VerseKey)}||{Formatters.GetBookFromKey(this.VerseKey)}||{Formatters.GetChapterFromKey(this.VerseKey)}||";
@@ -134,8 +135,9 @@ namespace Bible.Models.Bookmarks
 
                         string itemKey = $"{mainKey}{verseNumber}||";
 
-                        result.AppendLine($"{verseNumber}. {BiblesData.Database.GetVerse(itemKey).VerseText}");
-                    }                }
+                        result.AppendLine($"{verseNumber}. {this.InvokeMethod(verseAssembly, "GetVerse", new object[] { itemKey })}");
+                    }                
+                }
 
                 return result.ToString();
             }

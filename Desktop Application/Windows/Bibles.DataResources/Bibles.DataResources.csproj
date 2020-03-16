@@ -118,6 +118,7 @@
     <Compile Include="Models\BibleModel.cs" />
     <Compile Include="Models\BibleVerseModel.cs" />
     <Compile Include="Models\BookmarkModel.cs" />
+    <Compile Include="Models\LinkModel.cs" />
     <Compile Include="Models\UserPreferenceModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -130,6 +131,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Bible.Models\Bible.Models.csproj">
+      <Project>{9fc7a6c5-cbf7-4d8d-b998-b5b4c815fe05}</Project>
+      <Name>Bible.Models</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Bibles.Common\Bibles.Common.csproj">
       <Project>{1ab1d3c5-374d-48e6-95fa-36dca0a912af}</Project>
       <Name>Bibles.Common</Name>

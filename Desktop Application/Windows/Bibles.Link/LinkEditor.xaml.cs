@@ -1,0 +1,121 @@
+﻿using Bibles.Common;
+using Bibles.Data;
+using Bibles.DataResources;
+using Bibles.DataResources.Models;
+using System;
+using System.Windows;
+using System.Windows.Media;
+using WPF.Tools.BaseClasses;
+using WPF.Tools.Exstention;
+
+namespace Bibles.Link
+{
+    /// <summary>
+    /// Interaction logic for LinkEditor.xaml
+    /// </summary>
+    public partial class LinkEditor : UserControlBase
+    {
+        private BibleVerseModel parentVerse;
+
+        private BibleVerseModel childVerse;
+
+        public LinkEditor(int bibleId, BibleVerseModel verse)
+        {
+            this.InitializeComponent();
+
+            this.parentVerse = verse;
+
+            this.uxParentVerse.Content = verse.VerseText;
+
+            this.uxReader.SetBible(bibleId);
+
+            this.SetVerseLinkText();
+        }
+
+        private void IndexerChapter_Changed(object sender, string key)
+        {
+            this.uxReader.SetChapter(key);
+        }
+
+        private void IndexerVerse_Changed(object sender, string key)
+        {
+            this.uxReader.SetVerse(key);
+        }
+
+        private void ChildVerse_Changed(object sender, BibleVerseModel verse)
+        {
+            try
+            {
+                this.childVerse = verse;
+
+                this.SetVerseLinkText();
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
+        }
+        
+        private void AcceptLink_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            try
+            {
+                LinkModel link = new LinkModel 
+                { 
+                    LinkKeyId = $"{this.parentVerse.BibleVerseKey}*{this.childVerse.BibleVerseKey}",
+                    Comments = this.uxLinkComments.Text
+                };
+
+                BiblesData.Database.CreateLink(link);
+                
+                string message = GlobalStaticData.Intance.GetKeyDescription(this.parentVerse.BibleVerseKey) +
+                    " was linked to " +
+                    GlobalStaticData.Intance.GetKeyDescription(this.childVerse.BibleVerseKey) +
+                    "." +
+                    Environment.NewLine + Environment.NewLine +
+                    "Would you like to link another one?";
+                
+                if (MessageBox.Show(message, "Link Another?", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                {
+                    this.GetParentWindow().Close();
+
+                    return;
+                }
+
+                this.childVerse = null;
+
+                this.SetVerseLinkText();
+
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
+        }
+    
+        private void SetVerseLinkText()
+        {
+            if (this.childVerse == null)
+            {
+                this.uxLinkDescription.Content = $"{GlobalStaticData.Intance.GetKeyDescription(this.parentVerse.BibleVerseKey)} -> ??";
+
+                this.uxLinkDescription.Foreground = Brushes.Red;
+
+                this.uxAcceptLink.BorderBrush = Brushes.Red;
+
+                this.uxAcceptLink.IsEnabled = false;
+            }
+            else
+            {
+                this.uxLinkDescription.Content = $"{GlobalStaticData.Intance.GetKeyDescription(this.parentVerse.BibleVerseKey)} -> {GlobalStaticData.Intance.GetKeyDescription(this.childVerse.BibleVerseKey)}";
+
+                this.uxLinkDescription.Foreground = Brushes.Black;
+
+                this.uxAcceptLink.BorderBrush = Brushes.Green;
+
+                this.uxAcceptLink.IsEnabled = true;
+            }
+        }
+
+    }
+}

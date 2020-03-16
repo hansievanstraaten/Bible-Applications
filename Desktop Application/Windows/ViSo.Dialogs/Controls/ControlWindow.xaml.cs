@@ -13,15 +13,19 @@ namespace ViSo.Dialogs.Controls
     {
         private bool isAsDialog = false;
 
+        private bool isAutoZize = false;
+
         private string boolUpdateMethodName;
 
-        public ControlWindow(string windowTitle, UserControlBase control, string boolUpdateMethod, bool isDialog)
+        public ControlWindow(string windowTitle, UserControlBase control, string boolUpdateMethod, bool isDialog, bool autoSize)
         {
             this.InitializeComponent();
 
             this.isAsDialog = isDialog;
 
-            this.AutoSize = true;
+            this.isAutoZize = autoSize;
+
+            this.AutoSize = autoSize;
 
             this.Title = windowTitle;
 
@@ -36,8 +40,9 @@ namespace ViSo.Dialogs.Controls
         {
             try
             {
-                this.AutoSize = true;
 
+                this.AutoSize = this.isAutoZize;
+                
                 this.Top = this.Height / 5;
             }
             catch (Exception err)

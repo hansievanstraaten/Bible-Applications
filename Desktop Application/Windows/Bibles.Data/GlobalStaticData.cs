@@ -185,6 +185,11 @@ namespace Bibles.Data
 
         public int GetChaptersCount(string bibleKey)
         {
+            if (bibleKey.IsNullEmptyOrWhiteSpace())
+            {
+                return 0;
+            }
+
             string book = Formatters.GetBookFromKey(bibleKey);
 
             return this.bookChapterCount[$"{book}||"];

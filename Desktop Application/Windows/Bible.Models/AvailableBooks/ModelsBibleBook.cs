@@ -1,12 +1,9 @@
-﻿using Bibles.DataResources;
-using Bibles.DataResources.Models;
-using System.Collections.Generic;
+﻿using GeneralExtensions;
+using System.Linq;
 using WPF.Tools.Attributes;
 using WPF.Tools.BaseClasses;
 using WPF.Tools.ModelViewer;
 using WPF.Tools.ToolModels;
-using System.Linq;
-using GeneralExtensions;
 
 namespace Bible.Models.AvailableBooks
 {
@@ -58,16 +55,9 @@ namespace Bible.Models.AvailableBooks
         {
             get
             {
-                List<Bibles.DataResources.Models.BibleModel> bibles = BiblesData.Database.GetBibles().Result;
-
-                List<DataItemModel> result = new List<DataItemModel>();
-
-                foreach(Bibles.DataResources.Models.BibleModel model in bibles)
-                {
-                    result.Add(new DataItemModel { DisplayValue = model.BibleName, ItemKey = model.BiblesId });
-                }
-
-                return result.OrderBy(d => d.DisplayValue).ToArray();
+                return this
+                    .InvokeMethod("Bibles.Data.GlobalInvokeData,Bibles.Data", "ListedBibles", new object[] { })
+                    .To<DataItemModel[]>();
             }
         }
     }

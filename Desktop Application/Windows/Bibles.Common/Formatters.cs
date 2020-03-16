@@ -43,6 +43,11 @@ namespace Bibles.Common
         
         public static int GetChapterFromKey(string bibleKey)
         {
+            if (bibleKey.IsNullEmptyOrWhiteSpace())
+            {
+                return -1;
+            }
+
             string[] keySplit = null;
 
             bool isBibleKey = Formatters.IsBiblesKey(bibleKey, out keySplit);

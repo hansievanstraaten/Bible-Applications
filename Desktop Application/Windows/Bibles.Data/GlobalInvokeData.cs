@@ -1,4 +1,6 @@
 ﻿using Bibles.DataResources;
+using Bibles.DataResources.Models;
+using WPF.Tools.ToolModels;
 
 namespace Bibles.Data
 {
@@ -17,6 +19,16 @@ namespace Bibles.Data
         public int GetChapterVerseCount(string unknownKey)
         {
             return GlobalStaticData.Intance.GetChapterVerseCount(unknownKey);
+        }
+
+        public DataItemModel[] ListedBibles()
+        {
+            return GlobalResources.ListedBibles();
+        }
+
+        public BibleVerseModel GetVerse(string verseKey)
+        {
+            return BiblesData.Database.GetVerse(verseKey);
         }
     }
 }

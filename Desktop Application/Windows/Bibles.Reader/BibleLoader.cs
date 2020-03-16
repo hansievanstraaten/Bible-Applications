@@ -9,7 +9,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using ViSo.Dialogs.Controls;
+using WPF.Tools.BaseClasses;
 using WPF.Tools.Specialized;
+using WPF.Tools.Exstention;
 
 namespace Bibles.Reader
 {
@@ -82,6 +85,27 @@ namespace Bibles.Reader
         {
         }
 
+        private static void LinkImage_Selected(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                Image item = (Image)sender;
+
+                string verseKey = item.Tag.ParseToString();
+
+                Type linkViewerType = Type.GetType("Bibles.Link.LinkViewer,Bibles.Link");
+
+                UserControlBase linkViewer = Activator.CreateInstance(linkViewerType, new object[] { verseKey }) as UserControlBase;
+                
+                ControlDialog.Show("Link Viewer",linkViewer, "SaveComments", autoSize: false);
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
+        }
+
+
         private static UIElement[] GetVerseNumberElements(int bibleId, BibleVerseModel verse)
         {
             UIElement[] result = new UIElement[4];
@@ -92,9 +116,9 @@ namespace Bibles.Reader
 
             result[1] = BibleLoader.GetVerseBookmarkImage(bibleId, verse.BibleVerseKey);
 
-            //result[2] = GlobalDictionary.GetStudyBookmarkImage(verse.VerseKey);
+            result[2] = BibleLoader.GetStudyBookmarkImage(verse.BibleVerseKey);
 
-            //result[3] = LinkManager.GetLinkImage(verse.VerseKey);
+            result[3] = BibleLoader.GetLinkImage(verse.BibleVerseKey);
 
             return result;
         }
@@ -131,6 +155,97 @@ namespace Bibles.Reader
             return img;
         }
 
-        
+        private static Image GetStudyBookmarkImage(string verseKey)
+        {
+            return null;
+
+            //Dictionary<string, string> bookmarks = new Dictionary<string, string>(); //GlobalDictionary.GetBookmarkedStudies(verseKey);
+
+            //List<Guid> removedBookmarksList = new List<Guid>();
+
+            //foreach (KeyValuePair<string, string> keyItem in GlobalDictionary.studyBookmarks)
+            //{
+            //    if (keyItem.Key.EndsWith(verseKey))
+            //    {
+            //        if (!File.Exists(keyItem.Value))
+            //        {
+            //            string[] keySplit = keyItem.Key.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
+
+            //            removedBookmarksList.Add(Guid.Parse(keySplit[0]));
+
+            //            continue;
+            //        }
+
+            //        bookmarks.Add(keyItem.Key, keyItem.Value);
+            //    }
+            //}
+
+            //foreach (Guid key in removedBookmarksList)
+            //{
+            //    GlobalDictionary.RemoveStudyBookmark(key, verseKey);
+            //}
+
+            //if (bookmarks.Count == 0)
+            //{
+            //    return null;
+            //}
+
+            //Image img = new Image
+            //{
+            //    Source = IconSets.ResourceImageSource("BookmarkSmallRed", 16),
+            //    Opacity = 0.5
+            //};
+
+            //if (bookmarks.Count > 0)
+            //{
+            //    ContextMenu bookmarkMenu = new ContextMenu();
+
+            //    StringBuilder imageTooltip = new StringBuilder();
+
+            //    imageTooltip.AppendLine("(Click to Edit)");
+
+            //    foreach (KeyValuePair<string, string> item in bookmarks)
+            //    {
+            //        //string[] keySplit = item.Key.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
+            //        string subjectName = Path.GetFileNameWithoutExtension(item.Value);
+
+            //        MenuItem menuItem = new MenuItem { Header = subjectName, Tag = item.Value };
+
+            //        imageTooltip.AppendLine(subjectName);
+
+            //        menuItem.Click += GlobalDictionary.StudyBookmarkMenuItem_Cliked;
+
+            //        bookmarkMenu.Items.Add(menuItem);
+            //    }
+
+            //    img.ToolTip = imageTooltip.ToString();
+
+            //    img.PreviewMouseUp += GlobalDictionary.StudyBookmarkContextMenu_Selected;
+
+            //    img.ContextMenu = bookmarkMenu;
+            //}
+
+            //return img;
+        }
+
+        public static Image GetLinkImage(string verseKey)
+        {
+            if (!BiblesData.Database.HaveLink(verseKey))
+            {
+                return null;
+            }
+
+            Image linkImage = new Image
+            {
+                Source = IconSets.ResourceImageSource("Link", 16),
+                Opacity = 0.5,
+                Tag = verseKey
+            };
+
+            linkImage.PreviewMouseLeftButtonUp += BibleLoader.LinkImage_Selected;
+
+            return linkImage;
+        }
+
     }
 }

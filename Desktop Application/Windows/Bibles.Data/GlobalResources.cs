@@ -1,5 +1,8 @@
 ﻿using Bibles.DataResources;
 using Bibles.DataResources.Models;
+using System.Collections.Generic;
+using System.Linq;
+using WPF.Tools.ToolModels;
 
 namespace Bibles.Data
 {
@@ -11,11 +14,20 @@ namespace Bibles.Data
             {
                 return BiblesData.Database.GetPreferences().Result;
             }
+        }
 
-            //set
-            //{
-            //    BiblesData.Database.InsertserPreference(value);
-            //}
+        public static DataItemModel[] ListedBibles()
+        {
+            List<BibleModel> bibles = BiblesData.Database.GetBibles().Result;
+
+            List<DataItemModel> result = new List<DataItemModel>();
+
+            foreach (Bibles.DataResources.Models.BibleModel model in bibles)
+            {
+                result.Add(new DataItemModel { DisplayValue = model.BibleName, ItemKey = model.BiblesId });
+            }
+
+            return result.OrderBy(d => d.DisplayValue).ToArray();
         }
     }
 }

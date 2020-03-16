@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using ViSo.Dialogs.Controls;
 using ViSo.Dialogs.ModelViewer;
 using ViSo.Dialogs.TextEditor;
 using WPF.Tools.BaseClasses;
@@ -222,9 +223,34 @@ namespace Bibles.Reader
 
         private void LinkVerse_Cliked(object sender, RoutedEventArgs e)
         {
+            if (this.SelectedVerseKey.IsNullEmptyOrWhiteSpace() ||
+                Formatters.GetVerseFromKey(this.SelectedVerseKey) <= 0)
+            {
+                MessageBox.Show("Please select a verse.");
+
+                return;
+            }
+
             try
             {
+                Type linkType = Type.GetType("Bibles.Link.LinkEditor,Bibles.Link");
 
+                object[] args = new object[]
+                {
+                    this.Bible.BibleId,
+                    this.versesDictionary[Formatters.GetVerseFromKey(this.SelectedVerseKey)]
+                };
+
+                UserControlBase linkEditor = Activator.CreateInstance(linkType, args) as UserControlBase;
+
+                string title = $"Link - {GlobalStaticData.Intance.GetKeyDescription(this.SelectedVerseKey)}";
+
+                linkEditor.Height = this.Height;
+
+                if (ControlDialog.ShowDialog(title, linkEditor, string.Empty, false).IsFalse())
+                {
+                    return;
+                }
             }
             catch (Exception err)
             {

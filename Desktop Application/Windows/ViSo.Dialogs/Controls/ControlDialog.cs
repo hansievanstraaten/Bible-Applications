@@ -9,11 +9,11 @@ namespace ViSo.Dialogs.Controls
     {
         private static ControlWindow window;
 
-        public static bool? ShowDialog(string windowTitle, UserControlBase control, string boolUpdateMethod)
+        public static bool? ShowDialog(string windowTitle, UserControlBase control, string boolUpdateMethod, bool autoSize = true)
         {
             try
             {
-                ControlDialog.window = new ControlWindow(windowTitle, control, boolUpdateMethod, true);
+                ControlDialog.window = new ControlWindow(windowTitle, control, boolUpdateMethod, true, autoSize);
 
                 return ControlDialog.window.ShowDialog();
             }
@@ -29,11 +29,11 @@ namespace ViSo.Dialogs.Controls
             }
         }
 
-        public static void Show(string windowTitle, UserControlBase control, string boolUpdateMethod, Window owner = null, bool isTopMost = false)
+        public static void Show(string windowTitle, UserControlBase control, string boolUpdateMethod, Window owner = null, bool isTopMost = false, bool autoSize = true)
         {
             try
             {
-                ControlDialog.window = new ControlWindow(windowTitle, control, boolUpdateMethod, false);
+                ControlDialog.window = new ControlWindow(windowTitle, control, boolUpdateMethod, false, autoSize);
 
                 if (owner != null)
                 {
