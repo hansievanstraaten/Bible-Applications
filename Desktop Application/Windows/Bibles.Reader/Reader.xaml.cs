@@ -14,6 +14,7 @@ using ViSo.Dialogs.Controls;
 using ViSo.Dialogs.ModelViewer;
 using ViSo.Dialogs.TextEditor;
 using WPF.Tools.BaseClasses;
+using WPF.Tools.Exstention;
 using WPF.Tools.Specialized;
 
 namespace Bibles.Reader
@@ -23,15 +24,19 @@ namespace Bibles.Reader
     /// </summary>
     public partial class Reader : UserControlBase
     {
-        public delegate void ScrollChangedEvent(object sender, ScrollChangedEventArgs e);
+        public delegate void ScrollChangedEvent(object sender, int visibleVerse, ScrollChangedEventArgs e);
 
-        public delegate void BibleBookChangedEvent(object sender, ModelsBibleBook bible);
+        public delegate void BibleChangedEvent(object sender, ModelsBibleBook bible);
+
+        public delegate void BookChangedEvent(object sender, string chapterkey);
 
         public delegate void SelectedVerseChangedEvent(object sender, BibleVerseModel verse);
 
         public event ScrollChangedEvent ScrollChanged;
 
-        public event BibleBookChangedEvent BibleBookChanged;
+        public event BibleChangedEvent BibleChanged;
+
+        public event BookChangedEvent BookChanged;
 
         public event SelectedVerseChangedEvent SelectedVerseChanged;
 
@@ -112,6 +117,30 @@ namespace Bibles.Reader
             }
         }
 
+        public void SelectVerse(string key)
+        {
+            if (key.IsNullEmptyOrWhiteSpace())
+            {
+                return;
+            }
+
+            this.SetCanPage(Formatters.GetChapterFromKey(key));
+
+            this.selectedKey = key;
+
+            this.SetHeader();
+
+            // Causes a stack overflow
+            //int verseNumber = Formatters.GetVerseFromKey(key);
+
+            //if (verseNumber > 0 && this.loadedTextBoxDictionary.ContainsKey(verseNumber))
+            //{
+            //    HighlightRitchTextBox verseBox = this.loadedTextBoxDictionary[verseNumber];
+
+            //    verseBox.Focus();
+            //}
+        }
+        
         private void Reader_Loaded(object sender, RoutedEventArgs e)
         {
             if (base.WasFirstLoaded)
@@ -141,7 +170,7 @@ namespace Bibles.Reader
             {
                 case "BibleName":
                     
-                    this.BibleBookChanged?.Invoke(this, this.Bible);
+                    this.BibleChanged?.Invoke(this, this.Bible);
 
                     break;
 
@@ -295,6 +324,8 @@ namespace Bibles.Reader
                 --chapter;
 
                 this.PageToChapter(chapter);
+
+                this.BookChanged?.Invoke(this, this.selectedKey);
             }
             catch (Exception err)
             {
@@ -311,6 +342,8 @@ namespace Bibles.Reader
                 ++chapter;
 
                 this.PageToChapter(chapter);
+
+                this.BookChanged?.Invoke(this, this.selectedKey);
             }
             catch (Exception err)
             {
@@ -338,9 +371,22 @@ namespace Bibles.Reader
 
         private void Scroll_Changed(object sender, ScrollChangedEventArgs e)
         {
-            this.ScrollChanged?.Invoke(this, e);
-        }
+            int visiblVerse = 0;
 
+            foreach(KeyValuePair<int, StackPanel> item in this.loadedVerseStackDictionary)
+            {
+                if (item.Value.IsVisibleOnScreen(this))
+                {
+                    visiblVerse = item.Key;
+
+                    break;
+                }
+
+            }
+
+            this.ScrollChanged?.Invoke(this, visiblVerse, e);
+        }
+               
         private void SetHeader()
         {
             this.uxBible[0].Header = GlobalStaticData.Intance.GetKeyDescription(this.selectedKey);
@@ -416,8 +462,8 @@ namespace Bibles.Reader
             this.uxVerseGridScroll.ScrollToVerticalOffset(versePoint.Y);
 
             verseBox.Focus();
-        }    
-    
+        }
+
         private void SetCanPage(int chapter)
         {
             if (!base.WasFirstLoaded)

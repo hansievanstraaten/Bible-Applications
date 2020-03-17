@@ -319,7 +319,7 @@ namespace Bibles
         {
             Reader.Reader reader = new Reader.Reader { ShowCloseButton = showCloseButton };
 
-            reader.BibleBookChanged += this.OnSelectedTabBible_Changed;
+            reader.BibleChanged += this.OnSelectedTabBible_Changed;
 
             reader.SelectedVerseChanged += this.OnReaderSelectedVerse_Changed;
 

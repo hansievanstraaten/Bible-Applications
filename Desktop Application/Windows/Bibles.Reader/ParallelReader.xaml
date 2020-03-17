@@ -16,12 +16,12 @@
             
         <local:Reader Grid.Row="0" Grid.Column="0" x:Name="uxReaderLeft" 
                       ScrollChanged="LeftScroll_Changed"
-                      BibleBookChanged="LeftBook_Changed"
+                      BookChanged="LeftBook_Changed"
                       SelectedVerseChanged="LeftVerseChanged"/>
 
         <local:Reader Grid.Row="0" Grid.Column="1" x:Name="uxReaderRight" 
                       ScrollChanged="RightScroll_Changed"
-                      BibleBookChanged="RightBook_Changed"
+                      BookChanged="RightBook_Changed"
                       SelectedVerseChanged="RightVerseChanged"/>
 
     </Grid>

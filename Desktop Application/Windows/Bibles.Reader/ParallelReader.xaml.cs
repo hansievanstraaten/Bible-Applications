@@ -1,5 +1,7 @@
 ﻿using Bibles.Common;
+using Bibles.DataResources.Models;
 using System;
+using System.Windows.Controls;
 using WPF.Tools.BaseClasses;
 
 namespace Bibles.Reader
@@ -33,16 +35,16 @@ namespace Bibles.Reader
             this.uxReaderRight.SetVerse(key);
         }
 
-        private void LeftScroll_Changed(object sender, System.Windows.Controls.ScrollChangedEventArgs e)
+        private void LeftScroll_Changed(object sender, int visibleVerse, ScrollChangedEventArgs e)
         {
             this.uxReaderRight.uxVerseGridScroll.ScrollToVerticalOffset(e.VerticalOffset);
         }
 
-        private void LeftBook_Changed(object sender, Bible.Models.AvailableBooks.ModelsBibleBook bible)
+        private void LeftBook_Changed(object sender, string chapterkey)
         {
             try
             {
-
+                this.uxReaderRight.SetChapter(chapterkey);
             }
             catch (Exception err)
             {
@@ -50,11 +52,11 @@ namespace Bibles.Reader
             }
         }
 
-        private void LeftVerseChanged(object sender, DataResources.Models.BibleVerseModel verse)
+        private void LeftVerseChanged(object sender, BibleVerseModel verse)
         {
             try
             {
-
+                this.uxReaderRight.SelectVerse(verse.BibleVerseKey);
             }
             catch (Exception err)
             {
@@ -62,16 +64,16 @@ namespace Bibles.Reader
             }
         }
 
-        private void RightScroll_Changed(object sender, System.Windows.Controls.ScrollChangedEventArgs e)
+        private void RightScroll_Changed(object sender, int visibleVerse, ScrollChangedEventArgs e)
         {
             this.uxReaderLeft.uxVerseGridScroll.ScrollToVerticalOffset(e.VerticalOffset);
         }
 
-        private void RightBook_Changed(object sender, Bible.Models.AvailableBooks.ModelsBibleBook bible)
+        private void RightBook_Changed(object sender, string chapterkey)
         {
             try
             {
-
+                this.uxReaderLeft.SetChapter(chapterkey);
             }
             catch (Exception err)
             {
@@ -79,11 +81,11 @@ namespace Bibles.Reader
             }
         }
 
-        private void RightVerseChanged(object sender, DataResources.Models.BibleVerseModel verse)
+        private void RightVerseChanged(object sender, BibleVerseModel verse)
         {
             try
             {
-
+                this.uxReaderLeft.SelectVerse(verse.BibleVerseKey);
             }
             catch (Exception err)
             {
