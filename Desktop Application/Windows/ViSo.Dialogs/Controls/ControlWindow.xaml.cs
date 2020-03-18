@@ -17,7 +17,13 @@ namespace ViSo.Dialogs.Controls
 
         private string boolUpdateMethodName;
 
-        public ControlWindow(string windowTitle, UserControlBase control, string boolUpdateMethod, bool isDialog, bool autoSize)
+        public ControlWindow(string windowTitle, 
+            UserControlBase control, 
+            string boolUpdateMethod, 
+            bool isDialog, 
+            bool autoSize,
+            bool showOkButton,
+            bool showCancelButton)
         {
             this.InitializeComponent();
 
@@ -28,6 +34,10 @@ namespace ViSo.Dialogs.Controls
             this.AutoSize = autoSize;
 
             this.Title = windowTitle;
+
+            this.uxOk.Visibility = showOkButton ? Visibility.Visible : Visibility.Collapsed;
+
+            this.uxCancel.Visibility = showCancelButton ? Visibility.Visible : Visibility.Collapsed;
 
             this.uxContent.Content = control;
 

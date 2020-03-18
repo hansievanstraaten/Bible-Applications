@@ -221,11 +221,25 @@ namespace Bibles
 
                 bookmarks.BookmarkReaderRequest += this.BookmarkReader_Request;
 
-                ControlDialog.Show("Bookmarks", bookmarks, string.Empty, this, true);
+                ControlDialog.Show("Bookmarks", bookmarks, string.Empty, owner:this, isTopMost:true);
             }
             catch (Exception err)
             {
                 ErrorLog.ShowError(err);
+            }
+        }
+        
+        private void Highlights_Cliked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                BibleHighlights highlight = new BibleHighlights();
+
+                ControlDialog.Show("Highlights", highlight, string.Empty, showCancelButton:false, autoSize:false);
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err); ;
             }
         }
 
@@ -325,5 +339,6 @@ namespace Bibles
 
             return reader;
         }
+
     }
 }

@@ -129,8 +129,7 @@ namespace Bibles.Common
 
             return keyItems.Concatenate("||");
         }
-
-
+        
         public static string RemoveBibleId(string bibleKey)
         {
             string[] keySplit = bibleKey.Split(Formatters.KeySplitValue, StringSplitOptions.RemoveEmptyEntries);

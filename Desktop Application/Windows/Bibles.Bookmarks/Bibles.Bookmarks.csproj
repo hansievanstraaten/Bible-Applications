@@ -69,6 +69,9 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BibleHighlights.xaml.cs">
+      <DependentUpon>BibleHighlights.xaml</DependentUpon>
+    </Compile>
     <Compile Include="BookmarksList.xaml.cs">
       <DependentUpon>BookmarksList.xaml</DependentUpon>
     </Compile>
@@ -137,6 +140,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="BibleHighlights.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="BookmarksList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

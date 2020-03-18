@@ -32,6 +32,45 @@ namespace Bibles.Link
             this.SetVerseLinkText();
         }
 
+        public bool AcceptLink()
+        {
+            try
+            {
+                LinkModel link = new LinkModel
+                {
+                    LinkKeyId = $"{this.parentVerse.BibleVerseKey}*{this.childVerse.BibleVerseKey}",
+                    Comments = this.uxLinkComments.Text
+                };
+
+                BiblesData.Database.CreateLink(link);
+
+                string message = GlobalStaticData.Intance.GetKeyDescription(this.parentVerse.BibleVerseKey) +
+                    " was linked to " +
+                    GlobalStaticData.Intance.GetKeyDescription(this.childVerse.BibleVerseKey) +
+                    "." +
+                    Environment.NewLine + Environment.NewLine +
+                    "Would you like to link another one?";
+
+                if (MessageBox.Show(message, "Link Another?", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                {
+                    return true;
+                }
+
+                this.childVerse = null;
+
+                this.SetVerseLinkText();
+
+                return false;
+
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+
+                return false;
+            }
+        }
+
         private void IndexerChapter_Changed(object sender, string key)
         {
             this.uxReader.SetChapter(key);
@@ -56,43 +95,6 @@ namespace Bibles.Link
             }
         }
         
-        private void AcceptLink_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            try
-            {
-                LinkModel link = new LinkModel 
-                { 
-                    LinkKeyId = $"{this.parentVerse.BibleVerseKey}*{this.childVerse.BibleVerseKey}",
-                    Comments = this.uxLinkComments.Text
-                };
-
-                BiblesData.Database.CreateLink(link);
-                
-                string message = GlobalStaticData.Intance.GetKeyDescription(this.parentVerse.BibleVerseKey) +
-                    " was linked to " +
-                    GlobalStaticData.Intance.GetKeyDescription(this.childVerse.BibleVerseKey) +
-                    "." +
-                    Environment.NewLine + Environment.NewLine +
-                    "Would you like to link another one?";
-                
-                if (MessageBox.Show(message, "Link Another?", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
-                {
-                    this.GetParentWindow().Close();
-
-                    return;
-                }
-
-                this.childVerse = null;
-
-                this.SetVerseLinkText();
-
-            }
-            catch (Exception err)
-            {
-                ErrorLog.ShowError(err);
-            }
-        }
-    
         private void SetVerseLinkText()
         {
             if (this.childVerse == null)
@@ -100,20 +102,12 @@ namespace Bibles.Link
                 this.uxLinkDescription.Content = $"{GlobalStaticData.Intance.GetKeyDescription(this.parentVerse.BibleVerseKey)} -> ??";
 
                 this.uxLinkDescription.Foreground = Brushes.Red;
-
-                this.uxAcceptLink.BorderBrush = Brushes.Red;
-
-                this.uxAcceptLink.IsEnabled = false;
             }
             else
             {
                 this.uxLinkDescription.Content = $"{GlobalStaticData.Intance.GetKeyDescription(this.parentVerse.BibleVerseKey)} -> {GlobalStaticData.Intance.GetKeyDescription(this.childVerse.BibleVerseKey)}";
 
                 this.uxLinkDescription.Foreground = Brushes.Black;
-
-                this.uxAcceptLink.BorderBrush = Brushes.Green;
-
-                this.uxAcceptLink.IsEnabled = true;
             }
         }
 

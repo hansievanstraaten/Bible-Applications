@@ -118,6 +118,7 @@
     <Compile Include="Models\BibleModel.cs" />
     <Compile Include="Models\BibleVerseModel.cs" />
     <Compile Include="Models\BookmarkModel.cs" />
+    <Compile Include="Models\HighlightVerseModel.cs" />
     <Compile Include="Models\LinkModel.cs" />
     <Compile Include="Models\UserPreferenceModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

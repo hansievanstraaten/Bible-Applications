@@ -18,13 +18,19 @@ namespace Bibles.Link
     {
         private string selectedLinkId;
 
+        private string viewerVerseKey;
+
         private Dictionary<string, ModelsLink> modelsLinksDictionary = new Dictionary<string, ModelsLink>();
 
         private Dictionary<string, string> commentsDictionary = new Dictionary<string, string>();
 
+        private List<string> deletedLinksList = new List<string>();
+
         public LinkViewer(string verseKey)
         {
             this.InitializeComponent();
+
+            this.viewerVerseKey = verseKey;
 
             this.LoadTreeItems(verseKey);
         }
@@ -42,6 +48,19 @@ namespace Bibles.Link
             }
 
             return true;
+        }
+
+        public string[] GetDeletedLinks
+        {
+            get
+            {
+                if (this.deletedLinksList.Count > 0)
+                {
+                    this.deletedLinksList.Add(this.viewerVerseKey);
+                }
+
+                return this.deletedLinksList.ToArray();
+            }
         }
 
         private void TreeItem_Changed(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e)
@@ -121,6 +140,7 @@ namespace Bibles.Link
 
                 deleteTreeItemParent.Items.Remove(this.uxLinkTree.SelectedItem);
 
+                this.deletedLinksList.Add(verseKey);
             }
             catch (Exception err)
             {

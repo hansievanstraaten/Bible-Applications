@@ -32,10 +32,11 @@
                 <MenuItem Header="Parallel Reader" Click="ParallelReader_Cliked" />
                 <Separator />
                 <MenuItem Header="Bookmarks" Click="Bookmarks_Cliked" />
+                <MenuItem Header="Highlighted Verses" Click="Highlights_Cliked" />
             </MenuItem>
         </Menu>
 
-        <Specialized:MessageLabel Grid.Row="0" Grid.Column="2" x:Name="uxMessageLable" Foreground="Red" HorizontalAlignment="Right" />
+        <Specialized:MessageLabel Grid.Row="0" Grid.Column="2" x:Name="uxMessageLable" Foreground="Red" HorizontalAlignment="Right" DisplaySeconds="15" />
         
         <!-- Left Menu -->
         <TabControl:TabControlVertical Grid.Row="1" Grid.Column="0" x:Name="uxLeftTab" DockLocation="Left" OnPinChanged="LeftTabPin_Changed" />

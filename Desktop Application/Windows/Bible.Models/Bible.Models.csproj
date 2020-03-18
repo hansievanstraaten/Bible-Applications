@@ -97,6 +97,7 @@
     <Compile Include="BibleBooks\BookModel.cs" />
     <Compile Include="BibleBooks\ChapterModel.cs" />
     <Compile Include="BibleBooks\VerseModel.cs" />
+    <Compile Include="Bookmarks\BibleHighlightsModel.cs" />
     <Compile Include="Bookmarks\ModelsBookmark.cs" />
     <Compile Include="Link\ModelsLink.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

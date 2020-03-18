@@ -139,12 +139,7 @@ namespace Bibles.DataResources
             }
 
             string searchKey = $"{Formatters.GetBibleFromKey(bibleKey)}||{Formatters.GetBookFromKey(bibleKey)}||{Formatters.GetChapterFromKey(bibleKey)}||";
-
-            // ENG - 1||03O||4||
-            // AFR - 2||03O||4||
-            // GER - 3||03O||4||
-            // XHO - 4||03O||4||
-
+            
             Task<List<BibleVerseModel>> resultList = BiblesData.database
                 .Table<BibleVerseModel>()
                 .Where(v => v.BibleVerseKey.StartsWith(searchKey))
@@ -254,6 +249,11 @@ namespace Bibles.DataResources
             Task<LinkModel> result = BiblesData.database
                 .Table<LinkModel>()
                 .FirstOrDefaultAsync(li => li.LinkKeyId.Contains(bibleKey));
+            
+            if (result.Result == null)
+            {
+                return;
+            }
 
             result.Result.Comments = comments;
 
@@ -346,6 +346,69 @@ namespace Bibles.DataResources
 
         #endregion
 
+        #region HIGHLIGHT VERSE
+
+        public List<HighlightVerseModel> GetHighlights()
+        {
+            Task<List<HighlightVerseModel>> result = BiblesData.database
+                .Table<HighlightVerseModel>()
+                .ToListAsync();
+
+            return result.Result.OrderBy(hex => hex.HexColour).ToList();
+        }
+
+        public List<HighlightVerseModel> GetVerseColours(string bibleVerseKey)
+        {
+            string bibleVerseKeyId = $"{bibleVerseKey}*";
+
+            Task<List<HighlightVerseModel>> result = BiblesData.database
+                .Table<HighlightVerseModel>()
+                .Where(hi => hi.BibleVerseKeyId.StartsWith(bibleVerseKeyId))
+                .ToListAsync();
+
+            return result.Result;
+        }
+        
+        public void InsertVerseColour(string bibleVerseKey, int startIndex, int length, string hexColour)
+        {
+            string bibleVerseKeyId = $"{bibleVerseKey}*{startIndex}*{length}";
+
+            Task<HighlightVerseModel> highlight = BiblesData.database
+                .Table<HighlightVerseModel>()
+                .FirstOrDefaultAsync(hi => hi.BibleVerseKeyId == bibleVerseKeyId);
+
+            if (highlight.Result == null)
+            {
+                HighlightVerseModel model = new HighlightVerseModel
+                {
+                    BibleVerseKeyId = bibleVerseKeyId,
+                    HexColour = hexColour
+                };
+
+                BiblesData.database.InsertAsync(model);
+            }
+            else
+            {
+                highlight.Result.HexColour = hexColour;
+
+                BiblesData.database.UpdateAsync(highlight.Result);
+            }
+        }
+
+        public void DeleteVerseColours(string bibleVerseKey)
+        {
+            string bibleVerseKeyId = $"{bibleVerseKey}*";
+
+            BiblesData.database.Table<HighlightVerseModel>().DeleteAsync(hi => hi.BibleVerseKeyId.StartsWith(bibleVerseKeyId));
+        }
+
+        public void DeleteHighlight(string bibleVerseKeyId)
+        {
+            BiblesData.database.Table<HighlightVerseModel>().DeleteAsync(hi => hi.BibleVerseKeyId == bibleVerseKeyId);
+        }
+
+        #endregion
+
         private async Task InitializeAsync()
         {
             if (!BiblesData.IsInitialized)
@@ -374,7 +437,12 @@ namespace Bibles.DataResources
                 {
                     await database.CreateTablesAsync(CreateFlags.ImplicitIndex, typeof(LinkModel)).ConfigureAwait(false);
                 }
-                    
+                   
+                if (!database.TableMappings.Any(hl => hl.MappedType.Name == typeof(HighlightVerseModel).Name))
+                {
+                    await database.CreateTablesAsync(CreateFlags.ImplicitIndex, typeof(HighlightVerseModel)).ConfigureAwait(false);
+                }
+
                 BiblesData.IsInitialized = true;
             }
         }

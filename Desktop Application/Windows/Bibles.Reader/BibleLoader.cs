@@ -5,6 +5,7 @@ using Bibles.DataResources.Models;
 using GeneralExtensions;
 using IconSet;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,12 +13,17 @@ using System.Windows.Media;
 using ViSo.Dialogs.Controls;
 using WPF.Tools.BaseClasses;
 using WPF.Tools.Specialized;
-using WPF.Tools.Exstention;
 
 namespace Bibles.Reader
 {
     internal static class BibleLoader
     {
+        public delegate void LinkViewerClosedEvent(object sender, string verseKey);
+
+        public static event LinkViewerClosedEvent LinkViewerClosed;
+
+        private static readonly char[] veseSplitValues = new char[] { '*' };
+
         internal static HighlightRitchTextBox GetVerseAsTextBox(int bibleId, BibleVerseModel verse, int column)
         {
             HighlightRitchTextBox result = new HighlightRitchTextBox
@@ -29,14 +35,15 @@ namespace Bibles.Reader
                 Margin = new Thickness(2, 0, 0, 15)
             };
 
-            //foreach (string item in GlobalDictionary.GetVerseHighlights(bible, verse.VerseKey))
-            //{
-            //    string[] itemSplit = item.Split(new string[] { "||" }, StringSplitOptions.None);
+            List<HighlightVerseModel> verseColours = BiblesData.Database.GetVerseColours(verse.BibleVerseKey);
 
-            //    result.HighlightText(itemSplit[0].ToInt32(), itemSplit[1].ToInt32(), ColourConverters.GetBrushfromHex(itemSplit[2]));
-            //}
+            foreach(HighlightVerseModel colour in verseColours)
+            {
+                string[] itemSplit = colour.BibleVerseKeyId.Split(BibleLoader.veseSplitValues);
 
-
+                result.HighlightText(itemSplit[1].ToInt32(), itemSplit[2].ToInt32(), ColourConverters.GetBrushfromHex(colour.HexColour));
+            }
+            
             Grid.SetRow(result, (Formatters.GetVerseFromKey(verse.BibleVerseKey) - 1));
 
             Grid.SetColumn(result, column);
@@ -97,15 +104,24 @@ namespace Bibles.Reader
 
                 UserControlBase linkViewer = Activator.CreateInstance(linkViewerType, new object[] { verseKey }) as UserControlBase;
                 
-                ControlDialog.Show("Link Viewer",linkViewer, "SaveComments", autoSize: false);
+                if (ControlDialog.ShowDialog("Link Viewer",linkViewer, "SaveComments", autoSize: false).IsFalse())
+                {
+                    return;
+                }
+
+                string[] deletedLinks = linkViewer.GetPropertyValue("GetDeletedLinks").To<string[]>();
+
+                foreach (string key in deletedLinks)
+                {
+                    BibleLoader.LinkViewerClosed?.Invoke(linkViewer, key);
+                }
             }
             catch (Exception err)
             {
                 ErrorLog.ShowError(err);
             }
         }
-
-
+        
         private static UIElement[] GetVerseNumberElements(int bibleId, BibleVerseModel verse)
         {
             UIElement[] result = new UIElement[4];

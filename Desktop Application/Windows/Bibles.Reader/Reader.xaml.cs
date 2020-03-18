@@ -5,6 +5,7 @@ using Bibles.Data;
 using Bibles.DataResources;
 using Bibles.DataResources.Models;
 using GeneralExtensions;
+using IconSet;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,6 +15,7 @@ using ViSo.Dialogs.Controls;
 using ViSo.Dialogs.ModelViewer;
 using ViSo.Dialogs.TextEditor;
 using WPF.Tools.BaseClasses;
+using WPF.Tools.ColoutPicker;
 using WPF.Tools.Exstention;
 using WPF.Tools.Specialized;
 
@@ -59,8 +61,15 @@ namespace Bibles.Reader
             this.Bible = new ModelsBibleBook();
 
             this.Bible.PropertyChanged += this.Bible_Changed;
-            
+
+            BibleLoader.LinkViewerClosed += this.RemoteLinkViewer_Closed;
+
             this.uxBible.Items.Add(this.Bible);
+        }
+
+        ~Reader()
+        {
+            BibleLoader.LinkViewerClosed -= this.RemoteLinkViewer_Closed;
         }
 
         public string SelectedVerseKey
@@ -280,10 +289,40 @@ namespace Bibles.Reader
 
                 linkEditor.Height = this.Height;
 
-                if (ControlDialog.ShowDialog(title, linkEditor, string.Empty, false).IsFalse())
+                if (ControlDialog.ShowDialog(title, linkEditor, "AcceptLink", false).IsFalse())
                 {
                     return;
                 }
+
+                // TODO: Create list on viewer to refresh this page
+
+                int selectedVerse = Formatters.GetVerseFromKey(this.selectedKey);
+
+                BibleLoader.RefreshVerseNumberPanel
+                    (
+                        this.loadedVerseStackDictionary[selectedVerse],
+                        this.Bible.BibleId,
+                        this.versesDictionary[selectedVerse]
+                    );
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
+        }
+        
+        private void RemoteLinkViewer_Closed(object sender, string verseKey)
+        {
+            try
+            {
+                int selectedVerse = Formatters.GetVerseFromKey(verseKey);
+
+                BibleLoader.RefreshVerseNumberPanel
+                    (
+                        this.loadedVerseStackDictionary[selectedVerse],
+                        this.Bible.BibleId,
+                        this.versesDictionary[selectedVerse]
+                    );
             }
             catch (Exception err)
             {
@@ -293,9 +332,40 @@ namespace Bibles.Reader
 
         private void BackColour_Clicked(object sender, RoutedEventArgs e)
         {
+            if (this.selectedKey.IsNullEmptyOrWhiteSpace() 
+                || Formatters.GetVerseFromKey(this.selectedKey) <= 0)
+            {
+                MessageBox.Show("Please select a Verse");
+
+                return;
+            }
+
             try
             {
+                ColourPicker picker = new ColourPicker();
 
+                if (picker.ShowDialog().IsFalse())
+                {
+                    return;
+                }
+
+                int verseNumber = Formatters.GetVerseFromKey(this.selectedKey);
+
+                HighlightRitchTextBox textBox = this.loadedTextBoxDictionary[verseNumber];
+
+                int start = textBox.GetSelectionStartIndex();
+
+                int length = textBox.GetSelectedTextLength();
+
+                textBox.HighlightText(start, length, picker.SelectedColour);
+
+                string bibleVerseKey = Formatters.IsBiblesKey(this.selectedKey) ?
+                    this.selectedKey
+                    :
+                    $"{this.Bible.BibleId}||{this.selectedKey}";
+
+
+                BiblesData.Database.InsertVerseColour(bibleVerseKey, start, length, ColourConverters.GetHexFromBrush(picker.SelectedColour));
             }
             catch (Exception err)
             {
@@ -305,9 +375,33 @@ namespace Bibles.Reader
 
         private void ClearBackColour_Clicked(object sender, RoutedEventArgs e)
         {
+            if (this.selectedKey.IsNullEmptyOrWhiteSpace()
+                || Formatters.GetVerseFromKey(this.selectedKey) <= 0)
+            {
+                MessageBox.Show("Please select a verse.");
+
+                return;
+            }
+
             try
             {
+                int verseNumber = Formatters.GetVerseFromKey(this.selectedKey);
 
+                HighlightRitchTextBox textBox = this.loadedTextBoxDictionary[verseNumber];
+
+                int start = textBox.GetSelectionStartIndex();
+
+                int length = textBox.GetSelectedTextLength();
+
+                textBox.Text = this.versesDictionary[verseNumber].VerseText;
+
+                string bibleVerseKey = Formatters.IsBiblesKey(this.selectedKey) ?
+                    this.selectedKey
+                    :
+                    $"{this.Bible.BibleId}||{this.selectedKey}";
+
+
+                BiblesData.Database.DeleteVerseColours(bibleVerseKey);
             }
             catch (Exception err)
             {
