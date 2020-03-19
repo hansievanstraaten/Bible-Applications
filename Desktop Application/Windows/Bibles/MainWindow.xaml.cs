@@ -7,6 +7,7 @@ using Bibles.Data;
 using Bibles.DataResources;
 using Bibles.DataResources.Models;
 using Bibles.Reader;
+using Bibles.Search;
 using GeneralExtensions;
 using System;
 using System.Collections.Generic;
@@ -228,6 +229,20 @@ namespace Bibles
                 ErrorLog.ShowError(err);
             }
         }
+
+        private void Search_Cliked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                SearchView search = new SearchView();
+
+                ControlDialog.Show("Search", search, string.Empty, owner:this, showCancelButton:false);
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
+        }
         
         private void Highlights_Cliked(object sender, RoutedEventArgs e)
         {
@@ -339,6 +354,5 @@ namespace Bibles
 
             return reader;
         }
-
     }
 }

@@ -7,6 +7,7 @@ using Bibles.DataResources.Models;
 using System.Collections.Generic;
 using Bibles.Common;
 using Bible.Models.Link;
+using System.Text;
 
 namespace Bibles.DataResources
 {
@@ -409,6 +410,204 @@ namespace Bibles.DataResources
 
         #endregion
 
+        #region SEARCH
+
+        private readonly char[] splitFilter = new char[] { ' ', '.', ',', ';', ':', '?', '!', '|' };
+
+        public List<BibleVerseModel> SearchExact(string word, int bibleId)
+        {
+            if (word.IsNullEmptyOrWhiteSpace())
+            {
+                return new List<BibleVerseModel>();
+            }
+
+            word = word.ToLower();
+
+            string bibleKey = $"{bibleId}||";
+
+            List<BibleVerseModel> result = new List<BibleVerseModel>();
+
+            char[] searchPostFixes = new char[] { ' ', ',', '.', '?', '!', ':', '\'' };
+            
+            foreach (char item in searchPostFixes)
+            {
+                string searchWord = $" {word}{item}";
+
+                Task<List<BibleVerseModel>> charResult = bibleId > 0 ?
+                    BiblesData.database
+                    .Table<BibleVerseModel>()
+                    .Where(s => s.BibleVerseKey.StartsWith(bibleKey)
+                                && s.VerseText.ToLower().Contains(searchWord))
+                    .ToListAsync()
+                    :
+                    BiblesData.database
+                    .Table<BibleVerseModel>()
+                    .Where(s =>  s.VerseText.ToLower().Contains(searchWord))
+                    .ToListAsync();
+
+                result.AddRange(charResult.Result);
+            }
+
+            return result;
+        }
+
+        public List<BibleVerseModel> SearchAnyOfTheWords(string phrase, int bibleId, out string[] searchSplitResult)
+        {               
+            if (phrase.IsNullEmptyOrWhiteSpace())
+            {
+                searchSplitResult = new string[] { };
+
+                return new List<BibleVerseModel>();
+            }
+            
+            string searchPhrase = phrase.ToLower();
+            
+            string[] searchSplit = searchPhrase
+                .Split(this.splitFilter)
+                .Select(s => $" {s}")
+                .ToArray();
+
+            searchSplitResult = searchSplit;
+
+            List<BibleVerseModel> result = new List<BibleVerseModel>();
+
+            List<string> loadedVerses = new List<string>();
+
+            foreach (string word in searchSplit)
+            {
+                StringBuilder sqlString = new StringBuilder();
+
+                sqlString.Append($"select * from BibleVerseModel where lower(VerseText) like ('%{word}%')");
+
+                if (bibleId > 0)
+                {
+                    string bibleKey = $"{bibleId}||";
+
+                    sqlString.Append($" and BibleVerseKey like ('{bibleKey}%')");
+                }
+
+                Task<List<BibleVerseModel>> searchResult = BiblesData.database.QueryAsync<BibleVerseModel>(sqlString.ToString(), new object[] { });
+
+                foreach (BibleVerseModel verse in searchResult.Result)
+                {
+                    if (loadedVerses.Contains(verse.BibleVerseKey))
+                    {
+                        continue;
+                    }
+
+                    loadedVerses.Add(verse.BibleVerseKey);
+
+                    result.Add(verse);
+                }
+            }
+
+            return result;
+        }
+
+        public List<BibleVerseModel> SearchAllOfTheWords(string phrase, int bibleId, out string[] searchSplitResult)
+        {
+            if (phrase.IsNullEmptyOrWhiteSpace())
+            {
+                searchSplitResult = new string[] { };
+
+                return new List<BibleVerseModel>();
+            }
+
+            string searchPhrase = phrase.ToLower();
+
+            string[] searchSplit = searchPhrase
+                .Split(this.splitFilter)
+                .ToArray();
+
+            searchSplitResult = searchSplit;
+
+            List<BibleVerseModel> result = new List<BibleVerseModel>();
+
+            List<string> loadedVerses = new List<string>();
+
+            StringBuilder andOrString = new StringBuilder();
+            
+            foreach (string word in searchSplit)
+            {
+                andOrString.Append("(");
+                                    
+                andOrString.Append($"lower(VerseText) like ('%{word}%') or ");
+
+                andOrString.Remove(andOrString.Length - 3, 3);
+
+                andOrString.Append(") and ");
+            }
+
+            andOrString.Remove(andOrString.Length - 4, 4);
+            
+            foreach (string word in searchSplit)
+            {
+                foreach (char item in this.splitFilter)
+                {
+                    StringBuilder sqlString = new StringBuilder();
+
+                    string paddedWord = $"{word}{item}";
+
+                    sqlString.Append($"select * from BibleVerseModel where {andOrString.ToString()}");
+
+                    if (bibleId > 0)
+                    {
+                        string bibleKey = $"{bibleId}||";
+
+                        sqlString.Append($" and BibleVerseKey like ('{bibleKey}%')");
+                    }
+
+
+                    string sqlTest = sqlString.ToString();
+
+                    Task<List<BibleVerseModel>> searchResult = BiblesData.database.QueryAsync<BibleVerseModel>(sqlString.ToString(), new object[] { });
+
+                    foreach(BibleVerseModel verse in searchResult.Result)
+                    {
+                        if (loadedVerses.Contains(verse.BibleVerseKey))
+                        {
+                            continue;
+                        }
+
+                        loadedVerses.Add(verse.BibleVerseKey);
+                    
+                        result.Add(verse);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public List<BibleVerseModel> SearchLikeThisPhrase(string phrase, int bibleId)
+        {
+            if (phrase.IsNullEmptyOrWhiteSpace())
+            {
+                return new List<BibleVerseModel>();
+            }
+
+            string bibleKey = $"{bibleId}||";
+
+            string searchPhrase = phrase.ToLower();
+            
+            Task<List<BibleVerseModel>> result = bibleId > 0 ?
+                BiblesData.database
+                .Table<BibleVerseModel>()
+                .Where(s => s.BibleVerseKey.StartsWith(bibleKey)
+                            && s.VerseText.ToLower().Contains(searchPhrase))
+                .ToListAsync()
+                :
+                BiblesData.database
+                .Table<BibleVerseModel>()
+                .Where(s => s.VerseText.ToLower().Contains(searchPhrase))
+                .ToListAsync();
+
+            return result.Result;
+        }
+
+        #endregion
+
+
         private async Task InitializeAsync()
         {
             if (!BiblesData.IsInitialized)
@@ -420,7 +619,7 @@ namespace Bibles.DataResources
 
                 if (!database.TableMappings.Any(bv => bv.MappedType.Name == typeof(BibleVerseModel).Name))
                 {
-                    await database.CreateTablesAsync(CreateFlags.None, typeof(BibleVerseModel)).ConfigureAwait(false);
+                    await database.CreateTablesAsync(CreateFlags.FullTextSearch4, typeof(BibleVerseModel)).ConfigureAwait(false);
                 }
 
                 if (!database.TableMappings.Any(up => up.MappedType.Name == typeof(UserPreferenceModel).Name))

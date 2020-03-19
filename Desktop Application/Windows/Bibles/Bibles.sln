@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViSo.Dialogs", "..\ViSo.Dia
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bibles.Link", "..\Bibles.Link\Bibles.Link.csproj", "{AB2C4B31-47F7-4F89-A0A7-3B696A602E50}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bibles.Search", "..\Bibles.Search\Bibles.Search.csproj", "{94447AAF-87D5-4A42-A5CC-59D722A502EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -223,6 +225,18 @@ Global
 		{AB2C4B31-47F7-4F89-A0A7-3B696A602E50}.Release|x64.Build.0 = Release|Any CPU
 		{AB2C4B31-47F7-4F89-A0A7-3B696A602E50}.Release|x86.ActiveCfg = Release|Any CPU
 		{AB2C4B31-47F7-4F89-A0A7-3B696A602E50}.Release|x86.Build.0 = Release|Any CPU
+		{94447AAF-87D5-4A42-A5CC-59D722A502EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94447AAF-87D5-4A42-A5CC-59D722A502EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94447AAF-87D5-4A42-A5CC-59D722A502EC}.Debug|x64.ActiveCfg = Debug|x64
+		{94447AAF-87D5-4A42-A5CC-59D722A502EC}.Debug|x64.Build.0 = Debug|x64
+		{94447AAF-87D5-4A42-A5CC-59D722A502EC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{94447AAF-87D5-4A42-A5CC-59D722A502EC}.Debug|x86.Build.0 = Debug|Any CPU
+		{94447AAF-87D5-4A42-A5CC-59D722A502EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94447AAF-87D5-4A42-A5CC-59D722A502EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94447AAF-87D5-4A42-A5CC-59D722A502EC}.Release|x64.ActiveCfg = Release|Any CPU
+		{94447AAF-87D5-4A42-A5CC-59D722A502EC}.Release|x64.Build.0 = Release|Any CPU
+		{94447AAF-87D5-4A42-A5CC-59D722A502EC}.Release|x86.ActiveCfg = Release|Any CPU
+		{94447AAF-87D5-4A42-A5CC-59D722A502EC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

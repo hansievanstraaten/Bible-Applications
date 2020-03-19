@@ -30,6 +30,7 @@
             <MenuItem Header="View">
                 <MenuItem Header="Bibles" x:Name="uxMenuBiles"/>
                 <MenuItem Header="Parallel Reader" Click="ParallelReader_Cliked" />
+                <MenuItem Header="Search" Click="Search_Cliked" />
                 <Separator />
                 <MenuItem Header="Bookmarks" Click="Bookmarks_Cliked" />
                 <MenuItem Header="Highlighted Verses" Click="Highlights_Cliked" />

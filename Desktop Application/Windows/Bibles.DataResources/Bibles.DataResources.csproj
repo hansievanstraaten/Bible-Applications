@@ -113,6 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BiblesData.cs" />
+    <Compile Include="DataEnums\SearchComparisonEnum.cs" />
     <Compile Include="DbConstraints.cs" />
     <Compile Include="InitializeData.cs" />
     <Compile Include="Models\BibleModel.cs" />
@@ -167,6 +168,7 @@
   <ItemGroup>
     <None Include="Resources\Xhosa.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\Bibles\packages\SQLitePCLRaw.lib.e_sqlite3.linux.1.1.13\build\net35\SQLitePCLRaw.lib.e_sqlite3.linux.targets" Condition="Exists('..\Bibles\packages\SQLitePCLRaw.lib.e_sqlite3.linux.1.1.13\build\net35\SQLitePCLRaw.lib.e_sqlite3.linux.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
