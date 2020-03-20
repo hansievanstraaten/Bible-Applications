@@ -1,9 +1,9 @@
-﻿using Bible.Models.AvailableBooks;
-using Bible.Models.Bookmarks;
+﻿using Bibles.DataResources.AvailableBooks;
+using Bibles.DataResources.Bookmarks;
 using Bibles.Common;
 using Bibles.Data;
 using Bibles.DataResources;
-using Bibles.DataResources.Models;
+using Bibles.DataResources.Aggregates;
 using GeneralExtensions;
 using IconSet;
 using System;

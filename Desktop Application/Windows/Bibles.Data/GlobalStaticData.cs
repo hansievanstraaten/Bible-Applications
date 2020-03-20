@@ -1,4 +1,4 @@
-﻿using Bible.Models.BibleBooks;
+﻿using Bibles.DataResources.BibleBooks;
 using Bibles.Common;
 using Bibles.Data.DataEnums;
 using Bibles.DataResources;

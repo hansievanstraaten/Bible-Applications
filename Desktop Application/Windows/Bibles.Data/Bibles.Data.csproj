@@ -102,10 +102,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Bible.Models\Bible.Models.csproj">
-      <Project>{9FC7A6C5-CBF7-4D8D-B998-B5B4C815FE05}</Project>
-      <Name>Bible.Models</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Bibles.Common\Bibles.Common.csproj">
       <Project>{1ab1d3c5-374d-48e6-95fa-36dca0a912af}</Project>
       <Name>Bibles.Common</Name>

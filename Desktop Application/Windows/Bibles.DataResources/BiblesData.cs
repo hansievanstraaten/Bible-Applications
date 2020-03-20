@@ -3,10 +3,10 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using GeneralExtensions;
-using Bibles.DataResources.Models;
+using Bibles.DataResources.Aggregates;
 using System.Collections.Generic;
 using Bibles.Common;
-using Bible.Models.Link;
+using Bibles.DataResources.Link;
 using System.Text;
 
 namespace Bibles.DataResources
@@ -606,8 +606,7 @@ namespace Bibles.DataResources
         }
 
         #endregion
-
-
+        
         private async Task InitializeAsync()
         {
             if (!BiblesData.IsInitialized)
@@ -640,6 +639,16 @@ namespace Bibles.DataResources
                 if (!database.TableMappings.Any(hl => hl.MappedType.Name == typeof(HighlightVerseModel).Name))
                 {
                     await database.CreateTablesAsync(CreateFlags.ImplicitIndex, typeof(HighlightVerseModel)).ConfigureAwait(false);
+                }
+
+                if (!database.TableMappings.Any(sc => sc.MappedType.Name == typeof(StudyCategoryModel).Name))
+                {
+                    await database.CreateTablesAsync(CreateFlags.AutoIncPK, typeof(StudyCategoryModel)).ConfigureAwait(false);
+                }
+
+                if (!database.TableMappings.Any(sh => sh.MappedType.Name == typeof(StudyHeaderModel).Name))
+                {
+                    await database.CreateTablesAsync(CreateFlags.AutoIncPK, typeof(StudyHeaderModel)).ConfigureAwait(false);
                 }
 
                 BiblesData.IsInitialized = true;

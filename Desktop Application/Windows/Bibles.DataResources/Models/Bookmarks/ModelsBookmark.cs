@@ -8,7 +8,7 @@ using WPF.Tools.BaseClasses;
 using WPF.Tools.ModelViewer;
 using WPF.Tools.ToolModels;
 
-namespace Bible.Models.Bookmarks
+namespace Bibles.DataResources.Bookmarks
 {
     [ModelNameAttribute("Bookmark")]
     public class ModelsBookmark : ModelsBase

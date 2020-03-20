@@ -4,19 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3E69298C-BA70-42FF-AFE2-2C297AF56550}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <RootNamespace>Bibles</RootNamespace>
-    <AssemblyName>Bibles</AssemblyName>
+    <ProjectGuid>{DA8A71FC-2293-4D3E-81C9-A5BB9AD0FD69}</ProjectGuid>
+    <OutputType>library</OutputType>
+    <RootNamespace>Bibles.Studies</RootNamespace>
+    <AssemblyName>Bibles.Studies</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -26,7 +24,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -34,64 +31,25 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>Books.ico</ApplicationIcon>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <PlatformTarget>x64</PlatformTarget>
     <OutputPath>bin\x64\Release\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug 32|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug 32\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug 32|x64'">
-    <OutputPath>bin\x64\Debug 32\</OutputPath>
-    <PlatformTarget>x64</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug 32|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug 32\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -110,24 +68,12 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
+    <Compile Include="EditStudy.xaml.cs">
+      <DependentUpon>EditStudy.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
+    <Compile Include="Models\CategoryTreeModel.cs" />
+    <Compile Include="Models\StudyCategory.cs" />
+    <Compile Include="Models\StudyHeader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -141,6 +87,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="StudyBookmarks.xaml.cs">
+      <DependentUpon>StudyBookmarks.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StudyCategories.xaml.cs">
+      <DependentUpon>StudyCategories.xaml</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -151,19 +103,22 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <Page Include="EditStudy.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StudyBookmarks.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StudyCategories.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Bibles.BookIndex\Bibles.BookIndex.csproj">
-      <Project>{b65d0057-2539-41d4-9a6d-2e1f8f76b182}</Project>
-      <Name>Bibles.BookIndex</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Bibles.Bookmarks\Bibles.Bookmarks.csproj">
-      <Project>{dbb8a019-9327-4874-996d-03621ef9a141}</Project>
-      <Name>Bibles.Bookmarks</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Bibles.Common\Bibles.Common.csproj">
-      <Project>{1AB1D3C5-374D-48E6-95FA-36DCA0A912AF}</Project>
+      <Project>{1ab1d3c5-374d-48e6-95fa-36dca0a912af}</Project>
       <Name>Bibles.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Bibles.DataResources\Bibles.DataResources.csproj">
@@ -173,22 +128,6 @@
     <ProjectReference Include="..\Bibles.Data\Bibles.Data.csproj">
       <Project>{eb22bf5b-1a1a-4db7-874b-50de6f7e1d1f}</Project>
       <Name>Bibles.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Bibles.Link\Bibles.Link.csproj">
-      <Project>{ab2c4b31-47f7-4f89-a0a7-3b696a602e50}</Project>
-      <Name>Bibles.Link</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Bibles.Reader\Bibles.Reader.csproj">
-      <Project>{0d0860a4-94be-4384-9e23-4a0b4d35e28e}</Project>
-      <Name>Bibles.Reader</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Bibles.Search\Bibles.Search.csproj">
-      <Project>{94447aaf-87d5-4a42-a5cc-59d722a502ec}</Project>
-      <Name>Bibles.Search</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Bibles.Studies\Bibles.Studies.csproj">
-      <Project>{da8a71fc-2293-4d3e-81c9-a5bb9ad0fd69}</Project>
-      <Name>Bibles.Studies</Name>
     </ProjectReference>
     <ProjectReference Include="..\GeneralExtensions\GeneralExtensions.csproj">
       <Project>{df72187c-d643-4e5f-af68-190c023930a9}</Project>
@@ -215,8 +154,6 @@
       <Name>WPF.Tools</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Books.ico" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

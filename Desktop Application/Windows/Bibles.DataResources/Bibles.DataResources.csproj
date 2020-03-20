@@ -116,12 +116,21 @@
     <Compile Include="DataEnums\SearchComparisonEnum.cs" />
     <Compile Include="DbConstraints.cs" />
     <Compile Include="InitializeData.cs" />
-    <Compile Include="Models\BibleModel.cs" />
-    <Compile Include="Models\BibleVerseModel.cs" />
-    <Compile Include="Models\BookmarkModel.cs" />
-    <Compile Include="Models\HighlightVerseModel.cs" />
-    <Compile Include="Models\LinkModel.cs" />
-    <Compile Include="Models\UserPreferenceModel.cs" />
+    <Compile Include="Aggregates\BibleModel.cs" />
+    <Compile Include="Aggregates\BibleVerseModel.cs" />
+    <Compile Include="Aggregates\BookmarkModel.cs" />
+    <Compile Include="Aggregates\HighlightVerseModel.cs" />
+    <Compile Include="Aggregates\LinkModel.cs" />
+    <Compile Include="Aggregates\StudyCategoryModel.cs" />
+    <Compile Include="Aggregates\StudyHeaderModel.cs" />
+    <Compile Include="Aggregates\UserPreferenceModel.cs" />
+    <Compile Include="Models\AvailableBooks\ModelsBibleBook.cs" />
+    <Compile Include="Models\BibleBooks\BookModel.cs" />
+    <Compile Include="Models\BibleBooks\ChapterModel.cs" />
+    <Compile Include="Models\BibleBooks\VerseModel.cs" />
+    <Compile Include="Models\Bookmarks\BibleHighlightsModel.cs" />
+    <Compile Include="Models\Bookmarks\ModelsBookmark.cs" />
+    <Compile Include="Models\Link\ModelsLink.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -133,10 +142,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Bible.Models\Bible.Models.csproj">
-      <Project>{9fc7a6c5-cbf7-4d8d-b998-b5b4c815fe05}</Project>
-      <Name>Bible.Models</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Bibles.Common\Bibles.Common.csproj">
       <Project>{1ab1d3c5-374d-48e6-95fa-36dca0a912af}</Project>
       <Name>Bibles.Common</Name>

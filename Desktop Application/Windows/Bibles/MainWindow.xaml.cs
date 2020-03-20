@@ -1,13 +1,14 @@
-﻿using Bible.Models.AvailableBooks;
-using Bible.Models.Bookmarks;
+﻿using Bibles.DataResources.AvailableBooks;
+using Bibles.DataResources.Bookmarks;
 using Bibles.BookIndex;
 using Bibles.Bookmarks;
 using Bibles.Common;
 using Bibles.Data;
 using Bibles.DataResources;
-using Bibles.DataResources.Models;
+using Bibles.DataResources.Aggregates;
 using Bibles.Reader;
 using Bibles.Search;
+using Bibles.Studies;
 using GeneralExtensions;
 using System;
 using System.Collections.Generic;
@@ -296,6 +297,20 @@ namespace Bibles
                 ErrorLog.ShowError(err);
             }
         }
+        
+        private void NewStudy_Cliked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                EditStudy study = new EditStudy(true);
+
+                ControlDialog.Show("New Study", study, "SaveStudy", owner:this, autoSize:false);
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
+        }
 
         #endregion
 
@@ -354,5 +369,6 @@ namespace Bibles
 
             return reader;
         }
+
     }
 }

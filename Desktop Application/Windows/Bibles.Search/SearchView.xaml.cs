@@ -2,7 +2,7 @@
 using Bibles.Data;
 using Bibles.DataResources;
 using Bibles.DataResources.DataEnums;
-using Bibles.DataResources.Models;
+using Bibles.DataResources.Aggregates;
 using GeneralExtensions;
 using System;
 using System.Collections.Generic;

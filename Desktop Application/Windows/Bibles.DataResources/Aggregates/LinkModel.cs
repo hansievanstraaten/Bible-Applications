@@ -1,6 +1,6 @@
 ﻿using SQLite;
 
-namespace Bibles.DataResources.Models
+namespace Bibles.DataResources.Aggregates
 {
     public class LinkModel
     {

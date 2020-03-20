@@ -1,9 +1,9 @@
-﻿using Bible.Models.Bookmarks;
+﻿using Bibles.DataResources.Bookmarks;
 using Bibles.DataResources;
 using WPF.Tools.BaseClasses;
 using GeneralExtensions;
 using System.Linq;
-using Bibles.DataResources.Models;
+using Bibles.DataResources.Aggregates;
 using System;
 using Bibles.Common;
 using System.Windows;

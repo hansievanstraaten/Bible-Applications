@@ -1,4 +1,4 @@
-﻿using Bible.Models.Link;
+﻿using Bibles.DataResources.Link;
 using Bibles.Common;
 using Bibles.Data;
 using Bibles.DataResources;

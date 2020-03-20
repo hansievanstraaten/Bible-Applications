@@ -1,4 +1,4 @@
-﻿namespace Bible.Models.BibleBooks
+﻿namespace Bibles.DataResources.BibleBooks
 {
     public class VerseModel
     {

@@ -35,6 +35,9 @@
                 <MenuItem Header="Bookmarks" Click="Bookmarks_Cliked" />
                 <MenuItem Header="Highlighted Verses" Click="Highlights_Cliked" />
             </MenuItem>
+            <MenuItem Header="Study Centre">
+                <MenuItem Header="New Study" Click="NewStudy_Cliked" />
+            </MenuItem>
         </Menu>
 
         <Specialized:MessageLabel Grid.Row="0" Grid.Column="2" x:Name="uxMessageLable" Foreground="Red" HorizontalAlignment="Right" DisplaySeconds="15" />

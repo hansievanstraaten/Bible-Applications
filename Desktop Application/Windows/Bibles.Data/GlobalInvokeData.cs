@@ -1,5 +1,5 @@
 ﻿using Bibles.DataResources;
-using Bibles.DataResources.Models;
+using Bibles.DataResources.Aggregates;
 using WPF.Tools.ToolModels;
 
 namespace Bibles.Data

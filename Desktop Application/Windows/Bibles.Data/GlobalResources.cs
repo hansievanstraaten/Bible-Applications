@@ -1,5 +1,5 @@
 ﻿using Bibles.DataResources;
-using Bibles.DataResources.Models;
+using Bibles.DataResources.Aggregates;
 using System.Collections.Generic;
 using System.Linq;
 using WPF.Tools.ToolModels;
@@ -22,7 +22,7 @@ namespace Bibles.Data
 
             List<DataItemModel> result = new List<DataItemModel>();
 
-            foreach (Bibles.DataResources.Models.BibleModel model in bibles)
+            foreach (BibleModel model in bibles)
             {
                 result.Add(new DataItemModel { DisplayValue = model.BibleName, ItemKey = model.BiblesId });
             }

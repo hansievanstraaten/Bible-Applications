@@ -2,7 +2,7 @@
 using GeneralExtensions;
 using WPF.Tools.BaseClasses;
 
-namespace Bible.Models.Bookmarks
+namespace Bibles.DataResources.Bookmarks
 {
     public class BibleHighlightsModel : ModelsBase
     {

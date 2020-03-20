@@ -132,13 +132,13 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Bible.Models\Bible.Models.csproj">
-      <Project>{9fc7a6c5-cbf7-4d8d-b998-b5b4c815fe05}</Project>
-      <Name>Bible.Models</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Bibles.Common\Bibles.Common.csproj">
       <Project>{1AB1D3C5-374D-48E6-95FA-36DCA0A912AF}</Project>
       <Name>Bibles.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bibles.DataResources\Bibles.DataResources.csproj">
+      <Project>{1D25CA61-D07C-47E4-96CB-BEE25D82C0F7}</Project>
+      <Name>Bibles.DataResources</Name>
     </ProjectReference>
     <ProjectReference Include="..\Bibles.Data\Bibles.Data.csproj">
       <Project>{EB22BF5B-1A1A-4DB7-874B-50DE6F7E1D1F}</Project>

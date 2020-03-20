@@ -1,7 +1,7 @@
-﻿using Bible.Models.Bookmarks;
+﻿using Bibles.DataResources.Bookmarks;
 using Bibles.Common;
 using Bibles.DataResources;
-using Bibles.DataResources.Models;
+using Bibles.DataResources.Aggregates;
 using GeneralExtensions;
 using System;
 using System.Collections.Generic;

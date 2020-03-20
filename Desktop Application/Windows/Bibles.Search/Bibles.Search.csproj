@@ -101,10 +101,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Bible.Models\Bible.Models.csproj">
-      <Project>{9fc7a6c5-cbf7-4d8d-b998-b5b4c815fe05}</Project>
-      <Name>Bible.Models</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Bibles.Common\Bibles.Common.csproj">
       <Project>{1AB1D3C5-374D-48E6-95FA-36DCA0A912AF}</Project>
       <Name>Bibles.Common</Name>

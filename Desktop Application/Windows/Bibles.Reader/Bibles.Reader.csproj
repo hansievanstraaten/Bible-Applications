@@ -140,10 +140,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Bible.Models\Bible.Models.csproj">
-      <Project>{9fc7a6c5-cbf7-4d8d-b998-b5b4c815fe05}</Project>
-      <Name>Bible.Models</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Bibles.Bookmarks\Bibles.Bookmarks.csproj">
       <Project>{dbb8a019-9327-4874-996d-03621ef9a141}</Project>
       <Name>Bibles.Bookmarks</Name>

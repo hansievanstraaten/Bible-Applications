@@ -1,7 +1,7 @@
 ﻿using SQLite;
 using System;
 
-namespace Bibles.DataResources.Models
+namespace Bibles.DataResources.Aggregates
 {
     public class BookmarkModel
     {

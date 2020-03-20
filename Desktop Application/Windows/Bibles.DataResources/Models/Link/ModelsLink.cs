@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Bible.Models.Link
+namespace Bibles.DataResources.Link
 {
     public class ModelsLink
     {

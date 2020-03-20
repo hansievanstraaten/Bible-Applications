@@ -1,7 +1,7 @@
 ﻿using Bibles.Common;
 using Bibles.Data;
 using Bibles.DataResources;
-using Bibles.DataResources.Models;
+using Bibles.DataResources.Aggregates;
 using System;
 using System.Windows;
 using System.Windows.Media;

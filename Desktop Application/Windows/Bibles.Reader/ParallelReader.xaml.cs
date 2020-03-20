@@ -1,5 +1,5 @@
 ﻿using Bibles.Common;
-using Bibles.DataResources.Models;
+using Bibles.DataResources.Aggregates;
 using System;
 using System.Windows.Controls;
 using WPF.Tools.BaseClasses;

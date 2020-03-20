@@ -5,7 +5,7 @@ using WPF.Tools.BaseClasses;
 using WPF.Tools.ModelViewer;
 using WPF.Tools.ToolModels;
 
-namespace Bible.Models.AvailableBooks
+namespace Bibles.DataResources.AvailableBooks
 {
     [ModelNameAttribute("Bibles")]
     public class ModelsBibleBook : ModelsBase

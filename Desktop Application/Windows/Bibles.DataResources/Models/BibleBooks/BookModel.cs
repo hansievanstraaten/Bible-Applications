@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Bible.Models.BibleBooks
+namespace Bibles.DataResources.BibleBooks
 {
     public class BookModel
     {
