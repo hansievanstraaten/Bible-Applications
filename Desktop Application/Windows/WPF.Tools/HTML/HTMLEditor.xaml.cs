@@ -8,7 +8,6 @@ using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using WPF.Tools.BaseClasses;
 using WPF.Tools.ColoutPicker;
 using WPF.Tools.Dictionaries;
@@ -16,10 +15,10 @@ using WPF.Tools.ToolModels;
 
 namespace WPF.Tools.HTML
 {
-  /// <summary>
-  /// Interaction logic for HTMLEditor.xaml
-  /// </summary>
-  public partial class HTMLEditor : UserControlBase
+    /// <summary>
+    /// Interaction logic for HTMLEditor.xaml
+    /// </summary>
+    public partial class HTMLEditor : UserControlBase
   {
     private double[] fontSizes = new double[] { 8, 9, 10, 11, 12, 14, 16, 18, 20, 24 };
 

@@ -11,8 +11,10 @@ namespace Bibles.Studies.Models
         private string studyName;
         
         private string author;
-        
-        private int studyCategory;
+
+        private string studyCategoryName;
+
+        private int studyCategoryId;
 
         public int StudyHeaderId 
         { 
@@ -63,18 +65,33 @@ namespace Bibles.Studies.Models
 
         [FieldInformation("Category", IsRequired = true, Sort = 3)]
         [BrowseButton("StudyCategoryBrowse", "Search Category", "Search")]
-        public int StudyCategory
+        public string StudyCategoryName
+        {
+            get
+            {
+                return this.studyCategoryName;
+            }
+
+            set
+            {
+                this.studyCategoryName = value;
+
+                base.OnPropertyChanged(() => this.StudyCategoryName);
+            }
+        }
+
+        public int StudyCategoryId
         { 
             get
             {
-                return this.studyCategory;
+                return this.studyCategoryId;
             }
                         
             set
             {
-                this.studyCategory = value;
+                this.studyCategoryId = value;
 
-                base.OnPropertyChanged(() => this.StudyCategory);
+                base.OnPropertyChanged(() => this.StudyCategoryId);
             }
         }
     }

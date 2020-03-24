@@ -14,6 +14,10 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         
         <WrapPanel Grid.Row="0" Orientation="Horizontal">
             <CommonControls:ActionButton ResourceImageName="Copy" ToolTip="Copy" Click="Copy_Clicked" Margin="0,0,5,0" DefaultSize="20" />
@@ -34,6 +38,7 @@
         <Specialized:HighlightRitchTextBox Grid.Row="1" x:Name="uxHtmlText"
                                            SpellCheck.IsEnabled="True"
                                            HorizontalAlignment="Stretch" 
+                                           HorizontalContentAlignment="Stretch"
                                            VerticalAlignment="Stretch"
                                            VerticalScrollBarVisibility="Auto"/>
             

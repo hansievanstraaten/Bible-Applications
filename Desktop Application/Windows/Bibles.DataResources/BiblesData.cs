@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using Bibles.Common;
 using Bibles.DataResources.Link;
 using System.Text;
+using Bibles.DataResources.Models.Categories;
+using WPF.Tools.Functions;
 
 namespace Bibles.DataResources
 {
@@ -59,13 +61,17 @@ namespace Bibles.DataResources
             return result;
         }
 
-        public Task<int> InsertserPreference(UserPreferenceModel userPreference)
+        public int InsertserPreference(UserPreferenceModel userPreference)
         {
             Task<UserPreferenceModel> existing = BiblesData.database.Table<UserPreferenceModel>().FirstOrDefaultAsync();
 
             if (existing.Result == null)
             {
-                return BiblesData.database.InsertAsync(userPreference);
+                Task<int> newResult = BiblesData.database.InsertAsync(userPreference);
+
+                int newResultValue = newResult.Result;
+
+                return userPreference.UserId;
             }
 
             existing.Result.DefaultBible = userPreference.DefaultBible;
@@ -82,7 +88,7 @@ namespace Bibles.DataResources
 
             BiblesData.database.UpdateAsync(existing.Result);
 
-            return Task<int>.Factory.StartNew(() => existing.Result.UserId);
+            return existing.Result.UserId;
         }
 
         #endregion
@@ -606,7 +612,208 @@ namespace Bibles.DataResources
         }
 
         #endregion
-        
+
+        #region STUDY CATEGORIES
+
+        public int InsertCategory(string name, int parentId)
+        {
+            StudyCategoryModel category = new StudyCategoryModel
+            {
+                CategoryName = name,
+                ParentStudyCategoryId = parentId
+            };
+
+            Task<int> insertTask = BiblesData.database.InsertAsync(category);
+
+            int insetValue = insertTask.Result;
+
+            return category.StudyCategoryId;
+        }
+
+        public string GetCategoryName(int studyCategoryId)
+        {
+            Task<StudyCategoryModel> result = BiblesData.database
+                .Table<StudyCategoryModel>()
+                .FirstOrDefaultAsync(c => c.StudyCategoryId == studyCategoryId);
+
+            return result.Result == null ? string.Empty : result.Result.CategoryName;
+        }
+
+        public List<CategoryTreeModel> GetCategoryTree()
+        {
+            Task<List<StudyCategoryModel>> categoriesTask = BiblesData.database
+                .Table<StudyCategoryModel>()
+                .ToListAsync();
+
+            List<CategoryTreeModel> result = new List<CategoryTreeModel>();
+
+            List<StudyCategoryModel> categoriesList = categoriesTask.Result;
+
+            foreach (StudyCategoryModel category in categoriesList.Where(pi => pi.ParentStudyCategoryId == 0))
+            {
+                CategoryTreeModel resultItem = category.CopyToObject(new CategoryTreeModel()).To<CategoryTreeModel>();
+
+                this.LoadTreeChildren(resultItem, categoriesList);
+
+                result.Add(resultItem);
+            }
+
+            return result;
+        }
+
+        public void DeleteCategory(int studyCategoryId)
+        {
+            Task<StudyHeaderModel> headerTask = BiblesData.database
+                .Table<StudyHeaderModel>()
+                .FirstOrDefaultAsync(ca => ca.StudyCategoryId == studyCategoryId);
+
+            if (headerTask.Result != null)
+            {
+                throw new ApplicationException($"Cannot delete category whiles study {headerTask.Result.StudyName} is attached to it. Please move or remove the study before attempting to delete the category.");
+            }
+            
+            Task<List<StudyCategoryModel>> currentCategories = BiblesData.database
+                .Table<StudyCategoryModel>()
+                .ToListAsync();
+
+            StudyHeaderModel header = this.DeleteCategoryChildVerification(studyCategoryId, currentCategories.Result);
+
+            if (header != null)
+            {
+                throw new ApplicationException($"Cannot delete category whiles child category have study {header.StudyName} is attached to it. Please move or remove the study before attempting to delete the category.");
+            }
+
+            this.DeleteChildCategoryTreeDown(studyCategoryId, currentCategories.Result);
+        }
+
+        private void DeleteChildCategoryTreeDown(int studyCategoryId, List<StudyCategoryModel> categoriesList)
+        {
+            BiblesData.database
+                .Table<StudyCategoryModel>()
+                .DeleteAsync(del => del.StudyCategoryId == studyCategoryId);
+
+            foreach(StudyCategoryModel child in categoriesList.Where(dc => dc.ParentStudyCategoryId == studyCategoryId))
+            {
+                this.DeleteChildCategoryTreeDown(child.StudyCategoryId, categoriesList);
+            }
+        }
+
+        private StudyHeaderModel DeleteCategoryChildVerification(int studyCategoryId, List<StudyCategoryModel> categoriesList)
+        {
+            if (categoriesList.Count == 0)
+            {
+                return null;
+            }
+
+            foreach(StudyCategoryModel child in categoriesList.Where(cl => cl.ParentStudyCategoryId == studyCategoryId))
+            {
+                Task<StudyHeaderModel> headerTask = BiblesData.database
+                .Table<StudyHeaderModel>()
+                .FirstOrDefaultAsync(ca => ca.StudyCategoryId == studyCategoryId);
+
+                if (headerTask.Result != null)
+                {
+                    return headerTask.Result;
+                }
+
+                StudyHeaderModel header = this.DeleteCategoryChildVerification(child.StudyCategoryId, categoriesList);
+
+                if (header != null)
+                {
+                    return header;
+                }
+            }
+
+            return null;
+        }
+
+        private void LoadTreeChildren(CategoryTreeModel parent, List<StudyCategoryModel> categoriesList)
+        {
+            foreach(StudyCategoryModel child in categoriesList.Where(ci => ci.ParentStudyCategoryId == parent.StudyCategoryId))
+            {
+                CategoryTreeModel childItem = child.CopyToObject(new CategoryTreeModel()).To<CategoryTreeModel>();
+
+                this.LoadTreeChildren(childItem, categoriesList);
+
+                parent.ChildCategories.Add(childItem);
+            }
+        }
+
+        #endregion
+
+        #region STUDY SUBJECT HEADER
+
+        public int InsertSubjectHeader(StudyHeaderModel header)
+        {
+            Task<StudyHeaderModel> existing = BiblesData.database
+                .Table<StudyHeaderModel>()
+                .FirstOrDefaultAsync(st => st.StudyHeaderId == header.StudyHeaderId);
+
+            if (existing.Result == null)
+            {
+                Task<int>  result = BiblesData.database.InsertAsync(header);
+
+                int resultCheck = result.Result;
+                
+                return header.StudyHeaderId;
+            }
+            else
+            {
+                existing.Result.StudyName = header.StudyName;
+
+                existing.Result.Author = header.Author;
+
+                existing.Result.StudyCategoryId = header.StudyCategoryId;
+
+                BiblesData.database.UpdateAsync(existing.Result);
+
+                return header.StudyHeaderId;
+            }
+        }
+
+        public List<StudyHeaderModel> GetStudyHeaderByCategory(int categoryId)
+        {
+            Task<List<StudyHeaderModel>> result = BiblesData.database
+                .Table<StudyHeaderModel>()
+                .Where(ci => ci.StudyCategoryId == categoryId)
+                .ToListAsync();
+
+            return result.Result;
+        }
+
+        #endregion
+
+        #region STUDY CONTENT
+
+        public StudyContentModel GetStudyContent(int studyHeaderId)
+        {
+            Task<StudyContentModel> taskContent = BiblesData.database
+               .Table<StudyContentModel>()
+               .FirstOrDefaultAsync(s => s.StudyHeaderId == studyHeaderId);
+
+            return taskContent.Result;
+        }
+
+        public void InsertStudyContent(StudyContentModel content)
+        {
+            Task<StudyContentModel> taskContent = BiblesData.database
+               .Table<StudyContentModel>()
+               .FirstOrDefaultAsync(s => s.StudyHeaderId == content.StudyHeaderId);
+
+            if (taskContent.Result == null)
+            {
+                BiblesData.database.InsertAsync(content);
+            }
+            else
+            {
+                taskContent.Result.Content = content.Content;
+
+                BiblesData.database.UpdateAsync(taskContent.Result);
+            }
+        }
+
+        #endregion
+
         private async Task InitializeAsync()
         {
             if (!BiblesData.IsInitialized)
@@ -649,6 +856,11 @@ namespace Bibles.DataResources
                 if (!database.TableMappings.Any(sh => sh.MappedType.Name == typeof(StudyHeaderModel).Name))
                 {
                     await database.CreateTablesAsync(CreateFlags.AutoIncPK, typeof(StudyHeaderModel)).ConfigureAwait(false);
+                }
+
+                if (!database.TableMappings.Any(scon => scon.MappedType.Name == typeof(StudyContentModel).Name))
+                {
+                    await database.CreateTablesAsync(CreateFlags.None, typeof(StudyContentModel)).ConfigureAwait(false);
                 }
 
                 BiblesData.IsInitialized = true;

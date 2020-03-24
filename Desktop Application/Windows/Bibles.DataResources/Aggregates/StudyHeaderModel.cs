@@ -11,6 +11,6 @@ namespace Bibles.DataResources.Aggregates
 
         public string Author { get; set; }
 
-        public int StudyCategory { get; set; }
+        public int StudyCategoryId { get; set; }
     }
 }

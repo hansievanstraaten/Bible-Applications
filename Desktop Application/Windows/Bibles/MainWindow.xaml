@@ -23,7 +23,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- Main Menu -->
-        <Menu Grid.Row="0" Grid.Column="0">
+        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
             <MenuItem Header="File">
                 <MenuItem Header="Exit" Click="Exit_Cliked" />
             </MenuItem>
@@ -37,6 +37,7 @@
             </MenuItem>
             <MenuItem Header="Study Centre">
                 <MenuItem Header="New Study" Click="NewStudy_Cliked" />
+                <MenuItem Header="Open Study" Click="OpenStudy_Cliked" />
             </MenuItem>
         </Menu>
 

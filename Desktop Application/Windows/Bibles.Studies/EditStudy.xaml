@@ -18,14 +18,14 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" x:Name="uxColumn0" />
             <ColumnDefinition Width="3" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
                 
         <ModelViewer:ModelViewer Grid.Row="0" Grid.Column="0" x:Name="uxSubjectHeader" ModelViewItemBrowse="SubjectHeder_Browsed" />
 
-        <HTML:HTMLEditor Grid.Row="1" Grid.Column="0" />
+        <HTML:HTMLEditor Grid.Row="1" Grid.Column="0" x:Name="uxContent" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
 
         <CommonControls:VerticalGridSplit Grid.Row="0" Grid.Column="1" Grid.RowSpan="3" />
         

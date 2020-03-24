@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Bibles.Studies.Models
+namespace Bibles.DataResources.Models.Categories
 {
     public class CategoryTreeModel
     {
@@ -17,5 +17,4 @@ namespace Bibles.Studies.Models
 
         public List<CategoryTreeModel> ChildCategories;
     }
-
 }

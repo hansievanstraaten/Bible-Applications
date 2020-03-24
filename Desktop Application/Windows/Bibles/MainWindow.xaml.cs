@@ -302,9 +302,23 @@ namespace Bibles
         {
             try
             {
-                EditStudy study = new EditStudy(true);
+                EditStudy study = new EditStudy();
 
                 ControlDialog.Show("New Study", study, "SaveStudy", owner:this, autoSize:false);
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
+        }
+        
+        private void OpenStudy_Cliked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                StudiesByCategory study = new StudiesByCategory();
+
+                ControlDialog.ShowDialog("Open Study", study, string.Empty, autoSize:false, showCancelButton:false);
             }
             catch (Exception err)
             {

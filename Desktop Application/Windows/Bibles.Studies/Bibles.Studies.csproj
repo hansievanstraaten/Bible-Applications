@@ -71,7 +71,6 @@
     <Compile Include="EditStudy.xaml.cs">
       <DependentUpon>EditStudy.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\CategoryTreeModel.cs" />
     <Compile Include="Models\StudyCategory.cs" />
     <Compile Include="Models\StudyHeader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -86,6 +85,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="StudiesByCategory.xaml.cs">
+      <DependentUpon>StudiesByCategory.xaml</DependentUpon>
     </Compile>
     <Compile Include="StudyBookmarks.xaml.cs">
       <DependentUpon>StudyBookmarks.xaml</DependentUpon>
@@ -104,6 +106,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="EditStudy.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StudiesByCategory.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
