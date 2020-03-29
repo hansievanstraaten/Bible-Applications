@@ -29,14 +29,6 @@
 
         <CommonControls:LableItem Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" x:Name="uxLinkDescription" FontWeight="ExtraBold" />
 
-        <!--<CommonControls:ActionButton Grid.Row="2" Grid.Column="0" ResourceImageName="Accept" 
-                                     x:Name="uxAcceptLink" 
-                                     IsEnabled="False" 
-                                     Click="AcceptLink_Click" 
-                                     BorderThickness="1" 
-                                     BorderBrush="Green"
-                                     VerticalAlignment="Top"/>-->
-
         <BookIndex:Indexer Grid.Row="2" Grid.Column="1" 
                            ChapterChanged="IndexerChapter_Changed"
                            VerseChanged="IndexerVerse_Changed"/>

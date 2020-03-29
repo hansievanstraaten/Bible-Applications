@@ -10,6 +10,7 @@ using WPF.Tools.BaseClasses;
 using GeneralExtensions;
 using WPF.Tools.CommonControls;
 using System.Windows.Media;
+using WPF.Tools.Dictionaries;
 
 namespace WPF.Tools.Specialized
 {
@@ -134,7 +135,7 @@ namespace WPF.Tools.Specialized
 
       set
       {
-        this.block.Text = value;
+        this.block.Text = TranslationDictionary.Translate(value);
       }
     }
 

@@ -9,6 +9,7 @@ using ViSo.SharedEnums;
 using WPF.Tools.BaseClasses;
 using WPF.Tools.Dictionaries;
 using WPF.Tools.Functions;
+using WPF.Tools.Specialized;
 using WPF.Tools.ToolModels;
 
 namespace WPF.Tools.DataGridObjects
@@ -162,7 +163,7 @@ namespace WPF.Tools.DataGridObjects
       }
       catch (Exception err)
       {
-        MessageBox.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
+        MessageDisplay.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
       }
     }
 
@@ -176,7 +177,7 @@ namespace WPF.Tools.DataGridObjects
       }
       catch (Exception err)
       {
-        MessageBox.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
+        MessageDisplay.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
       }
     }
     
@@ -190,7 +191,7 @@ namespace WPF.Tools.DataGridObjects
       }
       catch (Exception err)
       {
-        MessageBox.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
+        MessageDisplay.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
       }
     }
 
@@ -226,7 +227,7 @@ namespace WPF.Tools.DataGridObjects
       }
       catch (Exception err)
       {
-        MessageBox.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
+        MessageDisplay.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
       }
     }
 
@@ -279,7 +280,7 @@ namespace WPF.Tools.DataGridObjects
       }
       catch(Exception err)
       {
-        MessageBox.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
+        MessageDisplay.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
       }
     }
 
@@ -316,7 +317,7 @@ namespace WPF.Tools.DataGridObjects
       }
       catch (Exception err)
       {
-        MessageBox.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
+        MessageDisplay.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
       }
     }
 
@@ -332,7 +333,7 @@ namespace WPF.Tools.DataGridObjects
       }
       catch (Exception err)
       {
-        MessageBox.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
+        MessageDisplay.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
       }
     }
 

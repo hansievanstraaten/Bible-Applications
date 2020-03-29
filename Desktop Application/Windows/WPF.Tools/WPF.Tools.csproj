@@ -138,7 +138,9 @@
     <Compile Include="DataGridObjects\ViSoDataGridPager.xaml.cs">
       <DependentUpon>ViSoDataGridPager.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DataGridObjects\VisoDataGridTextColumn.cs" />
     <Compile Include="Dictionaries\TranslationDictionary.cs" />
+    <Compile Include="Dictionaries\TranslationDictionaryInvoke.cs" />
     <Compile Include="Exstention\ComboBoxExstentions.cs" />
     <Compile Include="Exstention\DataGridExstentions.cs" />
     <Compile Include="Exstention\EnumirationExstentions.cs" />
@@ -182,6 +184,7 @@
     <Compile Include="Specialized\DirectionButton.cs" />
     <Compile Include="Specialized\FlashableLabel.cs" />
     <Compile Include="Specialized\HighlightRitchTextBox.cs" />
+    <Compile Include="Specialized\MessageDisplay.cs" />
     <Compile Include="Specialized\MessageLabel.cs" />
     <Compile Include="Specialized\PasswordBoxBindable.xaml.cs">
       <DependentUpon>PasswordBoxBindable.xaml</DependentUpon>

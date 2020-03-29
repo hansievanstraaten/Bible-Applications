@@ -9,7 +9,7 @@ namespace Bibles.DataResources.Aggregates
 
         public int DefaultBible { get; set; }
 
-        public string Language { get; set; }
+        public int LanguageId { get; set; }
 
         public bool SynchronizzeTabs { get; set; }
 

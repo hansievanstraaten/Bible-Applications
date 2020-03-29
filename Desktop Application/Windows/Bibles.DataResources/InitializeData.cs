@@ -83,10 +83,10 @@ namespace Bibles.DataResources
                                 Font = defaultFont.ParseToString(),
                                 FontSize = 12,
                                 SynchronizzeTabs = false,
-                                Language = "English"
+                                LanguageId = 0
                             };
 
-                            BiblesData.Database.InsertserPreference(userPref);
+                            BiblesData.Database.InsertPreference(userPref);
                         }
                     }
                 }

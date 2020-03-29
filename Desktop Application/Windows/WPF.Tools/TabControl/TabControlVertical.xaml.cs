@@ -12,6 +12,7 @@ using WPF.Tools.Dictionaries;
 using WPF.Tools.Exstention;
 using WPF.Tools.Functions;
 using WPF.Tools.Paneling;
+using WPF.Tools.Specialized;
 
 namespace WPF.Tools.TabControl
 {
@@ -289,7 +290,7 @@ namespace WPF.Tools.TabControl
       }
       catch (Exception err)
       {
-        MessageBox.Show(err.GetFullExceptionMessage());
+        MessageDisplay.Show(err.GetFullExceptionMessage());
       }
     }
 
@@ -575,7 +576,7 @@ namespace WPF.Tools.TabControl
 
             if (this.MaxTabls > 0 && this.Items.Count > this.MaxTabls)
             {
-              MessageBox.Show($"Maximum Tab Limit of {this.MaxTabls} reached");
+              MessageDisplay.Show($"Maximum Tab Limit of {this.MaxTabls} reached");
 
               this.Items.Remove(item);
 
@@ -919,7 +920,7 @@ namespace WPF.Tools.TabControl
       catch (Exception err)
       {
 #if DEBUG
-        MessageBox.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
+        MessageDisplay.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
 #endif
         // DO NOTHING
       }

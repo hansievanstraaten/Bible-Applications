@@ -1,6 +1,7 @@
 ﻿using GeneralExtensions;
 using System;
 using System.Windows;
+using WPF.Tools.Specialized;
 
 namespace ViSo.Dialogs.Input
 {
@@ -22,7 +23,7 @@ namespace ViSo.Dialogs.Input
       }
       catch (Exception err)
       {
-        MessageBox.Show(err.InnerExceptionMessage());
+        MessageDisplay.Show(err.InnerExceptionMessage());
       }
       finally
       {
@@ -48,7 +49,7 @@ namespace ViSo.Dialogs.Input
       }
       catch (Exception err)
       {
-        MessageBox.Show(err.InnerExceptionMessage());
+        MessageDisplay.Show(err.InnerExceptionMessage());
       }
       finally
       {

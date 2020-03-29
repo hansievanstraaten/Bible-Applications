@@ -1,13 +1,15 @@
-﻿using Bibles.DataResources.AvailableBooks;
-using Bibles.DataResources.Bookmarks;
-using Bibles.BookIndex;
+﻿using Bibles.BookIndex;
 using Bibles.Bookmarks;
 using Bibles.Common;
 using Bibles.Data;
 using Bibles.DataResources;
 using Bibles.DataResources.Aggregates;
+using Bibles.DataResources.AvailableBooks;
+using Bibles.DataResources.Bookmarks;
+using Bibles.DataResources.Models.Preferences;
 using Bibles.Reader;
 using Bibles.Search;
+using Bibles.Setup;
 using Bibles.Studies;
 using GeneralExtensions;
 using System;
@@ -17,9 +19,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using ViSo.Dialogs.Controls;
+using ViSo.Dialogs.ModelViewer;
 using WPF.Tools.BaseClasses;
+using WPF.Tools.Dictionaries;
+using WPF.Tools.Specialized;
 using WPF.Tools.TabControl;
+using WPF.Tools.ToolModels;
 
 namespace Bibles
 {
@@ -33,20 +40,41 @@ namespace Bibles
         private Indexer uxIndexer = new Indexer();
 
         public MainWindow()
-        {
+        {            
             this.InitializeComponent();
 
+            foreach (MenuItem item in this.uxMainMenu.Items)
+            {
+                this.SetMenuTranslation(item);
+            }
+
             this.uxMessageLable.Content = "Loading…";
-
-            //this.Loaded += this.MainWindow_Loaded;
-
+            
             this.Closing += this.MainWindow_Closing;
-
+            
             InitializeData initialData = new InitializeData();
 
             initialData.InitialDataLoadCompleted += this.InitialDataLoad_Completed;
 
             initialData.LoadEmbeddedBibles(this.Dispatcher, Application.Current.MainWindow.FontFamily);
+        }
+
+        public void LoadReader(int bibleId, string verseKey)
+        {
+            Reader.Reader reader = this.CreateReader(true);
+
+            this.uxMainTab.Items.Add(reader);
+
+            reader.SetBible(bibleId);
+
+            if (!verseKey.IsNullEmptyOrWhiteSpace())
+            {
+                string bibleKey = Formatters.ChangeBible(verseKey, bibleId);
+
+                reader.SetChapter(bibleKey);
+
+                reader.SetVerse(bibleKey);
+            }
         }
 
         #region MAIN WINDOW EVENTS
@@ -57,6 +85,10 @@ namespace Bibles
             {
                 UserPreferenceModel preference = GlobalResources.UserPreferences;
 
+                this.SetFont(preference.Font);
+
+                this.SetFontSize(preference.FontSize);
+              
                 string biblesKey = ((Reader.Reader)this.uxMainTab.Items[0]).SelectedVerseKey;
 
                 if (!Formatters.IsBiblesKey(biblesKey))
@@ -68,7 +100,7 @@ namespace Bibles
 
                 preference.LastReadVerse = biblesKey;
 
-                BiblesData.Database.InsertserPreference(preference);
+                BiblesData.Database.InsertPreference(preference);
             }
             catch (Exception err)
             {
@@ -93,6 +125,12 @@ namespace Bibles
 
                     this.LoadDynamicMenus();
 
+                    UserPreferenceModel preference = GlobalResources.UserPreferences;
+
+                    this.SetFont(preference.Font);
+
+                    this.SetFontSize(preference.FontSize);
+                    
                     this.selectedItemKey = GlobalResources.UserPreferences.LastReadVerse;
 
                     int bibleId = !this.selectedItemKey.IsNullEmptyOrWhiteSpace() && Formatters.IsBiblesKey(this.selectedItemKey) ?
@@ -111,7 +149,7 @@ namespace Bibles
             }
             catch (Exception err)
             {
-                MessageBox.Show(err.InnerExceptionMessage());
+                MessageDisplay.Show(err.InnerExceptionMessage());
             }
         }
         
@@ -223,7 +261,7 @@ namespace Bibles
 
                 bookmarks.BookmarkReaderRequest += this.BookmarkReader_Request;
 
-                ControlDialog.Show("Bookmarks", bookmarks, string.Empty, owner:this, isTopMost:true);
+                ControlDialog.Show("Bookmarks", bookmarks, string.Empty, owner:this, isTopMost:true, autoSize:false);
             }
             catch (Exception err)
             {
@@ -326,7 +364,143 @@ namespace Bibles
             }
         }
 
+        private void UserPreferences_Cliked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                UserPreference userPreferences = GlobalResources.UserPreferences.CopyToObject(new UserPreference()).To<UserPreference>();
+
+                userPreferences.PropertyChanged += this.UserPreference_Changed;
+
+                if (ModelView.ShowDialog("User Preferences", userPreferences).IsFalse())
+                {
+                    // Do this to reset the Font values
+                    userPreferences = GlobalResources.UserPreferences.CopyToObject(new UserPreference()).To<UserPreference>();
+
+                    return;
+                }
+
+                UserPreferenceModel updatePreference = userPreferences.CopyToObject(new UserPreferenceModel()).To<UserPreferenceModel>();
+
+                BiblesData.Database.InsertPreference(updatePreference);
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
+        }
+
+        private void UserPreference_Changed(object sender, PropertyChangedEventArgs e)
+        {
+            try
+            {
+                UserPreference preference = (UserPreference)sender;
+
+                switch (e.PropertyName)
+                {
+                    case "Font":
+
+                        this.SetFont(preference.Font);
+                        
+                        break;
+
+                    case "FontSize":
+
+                        this.SetFontSize(preference.FontSize);
+                        
+                        break;
+                }
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
+        }
+
+        private void LanguageSetup_Cliked(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                TranslationSetup setup = new TranslationSetup();
+
+                //if (ControlDialog.ShowDialog("Translation Setup", setup, "SaveSetup", autoSize:false).IsFalse())
+                ControlDialog.Show("Translation Setup", setup, "SaveSetup", owner: this, autoSize: false);
+            }
+            catch(Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
+        }
+        
+        private void About_Cliked(object sender, RoutedEventArgs e)
+        {
+            About about = new About();
+
+            ControlDialog.ShowDialog("About", about, string.Empty, showCancelButton: false);
+        }
+
         #endregion
+
+        //private void LoadTranslationsDictionary(int languageId)
+        //{
+        //    List<TranslationMappingModel> translationMapping = BiblesData.Database
+        //        .GetTranslationMapping(languageId);
+
+        //    List<DataItemModel> translationItems = new List<DataItemModel>();
+
+        //    foreach(TranslationMappingModel mapping in translationMapping)
+        //    {
+        //        translationItems.Add(new DataItemModel
+        //        {
+        //            ItemKey = mapping.EnglishLanguage.UnzipFile().ParseToString(),
+        //            DisplayValue = mapping.OtherLanguage.UnzipFile().ParseToString()
+        //        });
+        //    }
+
+        //    TranslationDictionary.LoadTransaltionFile(translationItems);
+        //}
+
+        private void SetMenuTranslation(MenuItem item)
+        {
+            item.Header = TranslationDictionary.Translate(item.Header.ParseToString());
+            
+            if (item.Items != null)
+            {
+                foreach (object child in item.Items)
+                {
+                    if (child.GetType() != typeof(MenuItem))
+                    {
+                        continue;
+                    }
+
+                    this.SetMenuTranslation((MenuItem)child);
+                }
+            }
+        }
+
+        private void SetFont(string fontName)
+        {
+            FontFamilyConverter fontConverter = new FontFamilyConverter();
+
+            FontFamily font = fontConverter.ConvertFromString(fontName).To<FontFamily>();
+
+            this.uxMainMenu.FontFamily = font;
+
+            foreach (Window window in Application.Current.Windows)
+            {
+                window.FontFamily = font;
+            }
+        }
+
+        private void SetFontSize(int size)
+        {
+            this.uxMainMenu.FontSize = size;
+
+            foreach (Window window in Application.Current.Windows)
+            {
+                window.FontSize = size;
+            }
+        }
 
         private void LoadDynamicMenus()
         {
@@ -335,6 +509,8 @@ namespace Bibles
             foreach (BibleModel bible in biblesTask.Result.OrderBy(n => n.BibleName))
             {
                 MenuItem item = new MenuItem { Header = bible.BibleName, Tag = bible.BiblesId };
+
+                //item.FontSize
 
                 item.Click += this.MenuBiblesItem_Clicked;
 
@@ -355,24 +531,6 @@ namespace Bibles
             this.uxMainTab.Items.Add(reader);
         }
 
-        private void LoadReader(int bibleId, string verseKey)
-        {
-            Reader.Reader reader = this.CreateReader(true);
-
-            this.uxMainTab.Items.Add(reader);
-
-            reader.SetBible(bibleId);
-
-            if (!verseKey.IsNullEmptyOrWhiteSpace())
-            {
-                string bibleKey = Formatters.ChangeBible(verseKey, bibleId);
-
-                reader.SetChapter(bibleKey);
-
-                reader.SetVerse(bibleKey);
-            }
-        }
-
         private Reader.Reader CreateReader(bool showCloseButton)
         {
             Reader.Reader reader = new Reader.Reader { ShowCloseButton = showCloseButton };
@@ -383,6 +541,5 @@ namespace Bibles
 
             return reader;
         }
-
     }
 }

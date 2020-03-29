@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using WPF.Tools.Attributes;
 using WPF.Tools.CommonControls;
+using WPF.Tools.Dictionaries;
 using WPF.Tools.ModelViewer.ValidationRules;
 using WPF.Tools.Specialized;
 using WPF.Tools.ToolModels;
@@ -347,7 +348,7 @@ namespace WPF.Tools.ModelViewer
 
         public void SetComboBoxItems(DataItemModel[] sourceItems)
         {
-            ComboBoxTool comboBox = (ComboBoxTool) this.contentObject;
+            ComboBoxTool comboBox = (ComboBoxTool)this.contentObject;
 
             comboBox.Items.Clear();
 
@@ -359,6 +360,27 @@ namespace WPF.Tools.ModelViewer
 
                 comboBox.Items.Add(valueItem);
             }
+
+            if (this.Binding != null)
+            {
+                ((IsRequiredValidationRule)this.Binding.ValidationRules.First(r => r.GetType() == typeof(IsRequiredValidationRule))).ComboBoxKeys = comboBoxKeys.ToArray();
+            }
+        }
+
+        public void AddComboBoxItem(DataItemModel sourceItem)
+        {
+            ComboBoxTool comboBox = (ComboBoxTool)this.contentObject;
+            
+            List<string> comboBoxKeys = new List<string>();
+            
+            foreach (DataItemModel valueItem in comboBox.Items)
+            {
+                comboBoxKeys.Add(valueItem.ItemKey.ParseToString());
+            }
+
+            comboBoxKeys.Add(sourceItem.ItemKey.ParseToString());
+
+            comboBox.Items.Add(sourceItem);
 
             if (this.Binding != null)
             {

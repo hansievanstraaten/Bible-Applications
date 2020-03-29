@@ -29,7 +29,7 @@
 
         <CommonControls:VerticalGridSplit Grid.Row="0" Grid.Column="1" Grid.RowSpan="3" />
         
-        <local:StudyBookmarks Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" />
+        <local:StudyBookmarks Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" x:Name="uxStudyBookmarks" />
         
     </Grid>
 </src:UserControlBase>

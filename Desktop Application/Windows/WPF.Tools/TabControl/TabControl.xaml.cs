@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using WPF.Tools.BaseClasses;
 using WPF.Tools.Exstention;
+using WPF.Tools.Specialized;
 
 namespace WPF.Tools.TabControl
 {
@@ -216,7 +217,7 @@ namespace WPF.Tools.TabControl
             }
             catch (Exception err)
             {
-                MessageBox.Show(err.GetFullExceptionMessage());
+                MessageDisplay.Show(err.GetFullExceptionMessage());
             }
         }
 
@@ -505,7 +506,7 @@ namespace WPF.Tools.TabControl
 
                         if (this.MaxTabls > 0 && this.Items.Count > this.MaxTabls)
                         {
-                            MessageBox.Show($"Maximum Tab Limit of {this.MaxTabls} reached");
+                            MessageDisplay.Show($"Maximum Tab Limit of {this.MaxTabls} reached");
 
                             this.Items.Remove(item);
 

@@ -2,6 +2,7 @@
 using System.Windows;
 using GeneralExtensions;
 using WPF.Tools.BaseClasses;
+using WPF.Tools.Specialized;
 
 namespace ViSo.Dialogs.Controls
 {
@@ -25,7 +26,7 @@ namespace ViSo.Dialogs.Controls
             }
             catch (Exception err)
             {
-                MessageBox.Show(err.InnerExceptionMessage());
+                MessageDisplay.Show(err.InnerExceptionMessage());
 
                 return false;
             }
@@ -60,7 +61,7 @@ namespace ViSo.Dialogs.Controls
             }
             catch (Exception err)
             {
-                MessageBox.Show(err.InnerExceptionMessage());
+                MessageDisplay.Show(err.InnerExceptionMessage());
             }
             finally
             {

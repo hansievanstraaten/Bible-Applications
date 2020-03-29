@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using ViSo.Dialogs.Input;
 using WPF.Tools.BaseClasses;
 using WPF.Tools.CommonControls;
+using WPF.Tools.Specialized;
 
 namespace Bibles.Studies
 {
@@ -77,8 +78,7 @@ namespace Bibles.Studies
                 if (InputBox.ShowDialog("Category", "Name").IsFalse())
                 {
                     return;
-                }
-;
+                };
 
                 int studyCategoryId = BiblesData.Database.InsertCategory(InputBox.Result, this.SelectedCategory.StudyCategoryId);
 
@@ -91,6 +91,8 @@ namespace Bibles.Studies
                 
                 ((TreeViewItemTool)this.uxCategoryTree.SelectedItem).Items.Add(this.CreateTreeViewItem(treeModel));
 
+                ((TreeViewItemTool)this.uxCategoryTree.SelectedItem).IsExpanded = true;
+
             }
             catch (Exception err)
             {
@@ -102,7 +104,7 @@ namespace Bibles.Studies
         {
             try
             {
-                if (MessageBox.Show($"Are you sure you would like to delete {this.SelectedCategory.CategoryName}", "Warning", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                if (MessageDisplay.Show($"Are you sure you would like to delete {this.SelectedCategory.CategoryName}", "Warning", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                 {
                     return;
                 }

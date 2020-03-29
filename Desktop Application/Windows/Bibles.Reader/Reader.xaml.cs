@@ -18,6 +18,11 @@ using WPF.Tools.BaseClasses;
 using WPF.Tools.ColoutPicker;
 using WPF.Tools.Exstention;
 using WPF.Tools.Specialized;
+using Bibles.Studies;
+using Bibles.Studies.Models;
+using Bibles.DataResources.Models.Bookmarks;
+using WPF.Tools.ToolModels;
+using System.Linq;
 
 namespace Bibles.Reader
 {
@@ -205,8 +210,50 @@ namespace Bibles.Reader
                     throw new ApplicationException("Please select a Verse.");
                 }
 
+                Dictionary<int, UserControlBase> openStudies = new Dictionary<int, UserControlBase>();
+
+                Dictionary<int, StudyHeader> studyHeaders = new Dictionary<int, StudyHeader>();
+
+                #region CHECK FOR OPEN STUDIES
+
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window.GetType() != typeof(ControlWindow))
+                    {
+                        continue;
+                    }
+
+                    UserControlBase controlBase = window.GetPropertyValue("ControlContent").To<UserControlBase>();
+
+                    if (controlBase.GetType() != typeof(EditStudy))
+                    {
+                        continue;
+                    }
+
+                    StudyHeader studyHeader = controlBase.GetPropertyValue("SubjectHeader").To<StudyHeader>();
+
+                    if (studyHeader.StudyHeaderId <= 0)
+                    {
+                        string studyName = studyHeader.StudyName.IsNullEmptyOrWhiteSpace() ? "Unknown" : studyHeader.StudyName;
+
+                        string message = $"Study {studyName} have not been saved yet. This study will not be available for bookmarks.";
+
+                        MessageDisplay.Show(message);
+
+                        continue;
+                    }
+
+                    openStudies.Add(studyHeader.StudyHeaderId, controlBase);
+
+                    studyHeaders.Add(studyHeader.StudyHeaderId, studyHeader);
+                }
+
+                #endregion
+
                 ModelsBookmark bookmark = new ModelsBookmark();
-                
+                    
+                ModelView.OnItemBrowse += this.BookmarkModel_Browse;
+
                 if (Formatters.IsBiblesKey(this.selectedKey))
                 {
                     bookmark.SetVerse(this.selectedKey);
@@ -216,16 +263,64 @@ namespace Bibles.Reader
                     bookmark.SetVerse($"{this.Bible.BibleId}||{this.selectedKey}");
                 }
 
-                ModelView.OnItemBrowse += this.BookmarkModel_Browse;
-
-                if (ModelView.ShowDialog("Bookmark", bookmark).IsFalse())
+                if (studyHeaders.Count > 0)
                 {
-                    return;
+                    #region STUDY BOOKMARKS
+
+                    StudyBookmarksModel studyMark = bookmark.CopyToObject(new StudyBookmarksModel()).To<StudyBookmarksModel>();
+
+                    List<DataItemModel> studyOptions = new List<DataItemModel>();
+
+                    studyOptions.Add(new DataItemModel { DisplayValue = $"<{this.Bible.BibleName}>", ItemKey = -1 });
+
+                    foreach(KeyValuePair<int, StudyHeader> studyKey in studyHeaders)
+                    {
+                        studyOptions.Add(new DataItemModel { DisplayValue = studyKey.Value.StudyName, ItemKey = studyKey.Key });
+                    }
+
+                    studyMark.AvailableStudies = studyOptions.ToArray();
+
+                    if (ModelView.ShowDialog("Bookmark", studyMark).IsFalse())
+                    {
+                        return;
+                    }
+
+                    if (studyMark.Study <= 0)
+                    {
+                        BookmarkModel dbModel = studyMark.CopyToObject(new BookmarkModel()).To<BookmarkModel>();
+
+                        BiblesData.Database.InsertBookmarkModel(dbModel);
+                    }
+                    else
+                    {
+                        StudyBookmarkModel dbModel = studyMark.CopyToObject(new StudyBookmarkModel()).To<StudyBookmarkModel>();
+
+                        dbModel.StudyName = studyMark.AvailableStudies.First(st => st.ItemKey.ToInt32() == studyMark.Study).DisplayValue;
+
+                        dbModel.StudyVerseKey = $"{studyMark.Study}||{dbModel.VerseKey}";
+
+                        BiblesData.Database.InsertStudyBookmarkModel(dbModel);
+
+                        this.InvokeMethod(openStudies[studyMark.Study], "AddBookmark", new object[] { bookmark });
+                    }
+
+                    #endregion
                 }
+                else
+                {
+                    #region NORMAL BOOKMARKS
+                    
+                    if (ModelView.ShowDialog("Bookmark", bookmark).IsFalse())
+                    {
+                        return;
+                    }
 
-                BookmarkModel dbModel = bookmark.CopyToObject(new BookmarkModel()).To<BookmarkModel>();
+                    BookmarkModel dbModel = bookmark.CopyToObject(new BookmarkModel()).To<BookmarkModel>();
 
-                BiblesData.Database.InsertBookmarkModel(dbModel);
+                    BiblesData.Database.InsertBookmarkModel(dbModel);
+
+                    #endregion
+                }
 
                 BibleLoader.RefreshVerseNumberPanel
                     (
@@ -268,7 +363,7 @@ namespace Bibles.Reader
             if (this.SelectedVerseKey.IsNullEmptyOrWhiteSpace() ||
                 Formatters.GetVerseFromKey(this.SelectedVerseKey) <= 0)
             {
-                MessageBox.Show("Please select a verse.");
+                MessageDisplay.Show("Please select a verse.");
 
                 return;
             }
@@ -335,7 +430,7 @@ namespace Bibles.Reader
             if (this.selectedKey.IsNullEmptyOrWhiteSpace() 
                 || Formatters.GetVerseFromKey(this.selectedKey) <= 0)
             {
-                MessageBox.Show("Please select a Verse");
+                MessageDisplay.Show("Please select a Verse");
 
                 return;
             }
@@ -378,7 +473,7 @@ namespace Bibles.Reader
             if (this.selectedKey.IsNullEmptyOrWhiteSpace()
                 || Formatters.GetVerseFromKey(this.selectedKey) <= 0)
             {
-                MessageBox.Show("Please select a verse.");
+                MessageDisplay.Show("Please select a verse.");
 
                 return;
             }

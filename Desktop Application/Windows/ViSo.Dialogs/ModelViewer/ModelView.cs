@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
+using WPF.Tools.Specialized;
 
 namespace ViSo.Dialogs.ModelViewer
 {
@@ -26,7 +27,7 @@ namespace ViSo.Dialogs.ModelViewer
       }
       catch (Exception err)
       {
-        MessageBox.Show(err.InnerExceptionMessage());
+        MessageDisplay.Show(err.InnerExceptionMessage());
       }
       finally
       {
@@ -50,7 +51,7 @@ namespace ViSo.Dialogs.ModelViewer
       }
       catch (Exception err)
       {
-        MessageBox.Show(err.InnerExceptionMessage());
+        MessageDisplay.Show(err.InnerExceptionMessage());
       }
       finally
       {
@@ -78,7 +79,7 @@ namespace ViSo.Dialogs.ModelViewer
       }
       catch (Exception err)
       {
-        MessageBox.Show(err.InnerExceptionMessage());
+        MessageDisplay.Show(err.InnerExceptionMessage());
       }
       finally
       {
@@ -106,7 +107,7 @@ namespace ViSo.Dialogs.ModelViewer
       }
       catch (Exception err)
       {
-        MessageBox.Show(err.InnerExceptionMessage());
+        MessageDisplay.Show(err.InnerExceptionMessage());
       }
     }
 

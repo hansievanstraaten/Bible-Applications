@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 using WPF.Tools.BaseClasses;
 using WPF.Tools.Exstention;
+using WPF.Tools.Specialized;
 
 namespace Bibles.Link
 {
@@ -51,7 +52,7 @@ namespace Bibles.Link
                     Environment.NewLine + Environment.NewLine +
                     "Would you like to link another one?";
 
-                if (MessageBox.Show(message, "Link Another?", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                if (MessageDisplay.Show(message, "Link Another?", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                 {
                     return true;
                 }

@@ -9,6 +9,7 @@ using Bibles.Common;
 using System.Windows;
 using System.Collections.Generic;
 using IconSet;
+using WPF.Tools.Specialized;
 
 namespace Bibles.Bookmarks
 {
@@ -116,7 +117,7 @@ namespace Bibles.Bookmarks
         {
             if (this.SelectedHighlight == null)
             {
-                MessageBox.Show("Please select a Verse.");
+                MessageDisplay.Show("Please select a Verse.");
 
                 return;
             }
@@ -125,7 +126,7 @@ namespace Bibles.Bookmarks
             {
                 string message = $"Are you sure you would like to delete {this.SelectedHighlight.Verse}?";
 
-                if (MessageBox.Show(message, "Warning", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                if (MessageDisplay.Show(message, "Warning", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                 {
                     return;
                 }

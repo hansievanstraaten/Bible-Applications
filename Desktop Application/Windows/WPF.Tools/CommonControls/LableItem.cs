@@ -3,6 +3,7 @@ using System.Windows.Media;
 using FlowDirection = System.Windows.FlowDirection;
 using Label = System.Windows.Controls.Label;
 using GeneralExtensions;
+using WPF.Tools.Dictionaries;
 
 namespace WPF.Tools.CommonControls
 {
@@ -76,7 +77,7 @@ namespace WPF.Tools.CommonControls
           return;
         }
 
-        base.Content = value;
+        base.Content = TranslationDictionary.Translate(value);
       }
     }
   }

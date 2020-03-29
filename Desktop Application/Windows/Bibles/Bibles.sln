@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bibles.Search", "..\Bibles.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bibles.Studies", "..\Bibles.Studies\Bibles.Studies.csproj", "{DA8A71FC-2293-4D3E-81C9-A5BB9AD0FD69}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bibles.Setup", "..\Bibles.Setup\Bibles.Setup.csproj", "{4D3A4DAF-06CA-41A9-8B6C-422040B5175A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -237,6 +239,18 @@ Global
 		{DA8A71FC-2293-4D3E-81C9-A5BB9AD0FD69}.Release|x64.Build.0 = Release|Any CPU
 		{DA8A71FC-2293-4D3E-81C9-A5BB9AD0FD69}.Release|x86.ActiveCfg = Release|Any CPU
 		{DA8A71FC-2293-4D3E-81C9-A5BB9AD0FD69}.Release|x86.Build.0 = Release|Any CPU
+		{4D3A4DAF-06CA-41A9-8B6C-422040B5175A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D3A4DAF-06CA-41A9-8B6C-422040B5175A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D3A4DAF-06CA-41A9-8B6C-422040B5175A}.Debug|x64.ActiveCfg = Debug|x64
+		{4D3A4DAF-06CA-41A9-8B6C-422040B5175A}.Debug|x64.Build.0 = Debug|x64
+		{4D3A4DAF-06CA-41A9-8B6C-422040B5175A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4D3A4DAF-06CA-41A9-8B6C-422040B5175A}.Debug|x86.Build.0 = Debug|Any CPU
+		{4D3A4DAF-06CA-41A9-8B6C-422040B5175A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D3A4DAF-06CA-41A9-8B6C-422040B5175A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D3A4DAF-06CA-41A9-8B6C-422040B5175A}.Release|x64.ActiveCfg = Release|Any CPU
+		{4D3A4DAF-06CA-41A9-8B6C-422040B5175A}.Release|x64.Build.0 = Release|Any CPU
+		{4D3A4DAF-06CA-41A9-8B6C-422040B5175A}.Release|x86.ActiveCfg = Release|Any CPU
+		{4D3A4DAF-06CA-41A9-8B6C-422040B5175A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

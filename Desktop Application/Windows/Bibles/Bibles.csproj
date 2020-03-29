@@ -114,10 +114,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="About.xaml.cs">
+      <DependentUpon>About.xaml</DependentUpon>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -185,6 +192,10 @@
     <ProjectReference Include="..\Bibles.Search\Bibles.Search.csproj">
       <Project>{94447aaf-87d5-4a42-a5cc-59d722a502ec}</Project>
       <Name>Bibles.Search</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bibles.Setup\Bibles.Setup.csproj">
+      <Project>{4d3a4daf-06ca-41a9-8b6c-422040b5175a}</Project>
+      <Name>Bibles.Setup</Name>
     </ProjectReference>
     <ProjectReference Include="..\Bibles.Studies\Bibles.Studies.csproj">
       <Project>{da8a71fc-2293-4d3e-81c9-a5bb9ad0fd69}</Project>

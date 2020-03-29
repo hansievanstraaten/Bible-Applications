@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WPF.Tools.Dictionaries;
+using WPF.Tools.Specialized;
 
 namespace WPF.Tools.BaseClasses
 {
@@ -76,7 +77,7 @@ namespace WPF.Tools.BaseClasses
             message.AppendLine(item);
           }
 
-          MessageBox.Show(message.ToString(), "You are at:");
+          MessageDisplay.Show(message.ToString(), "You are at:");
 
           break;
       }

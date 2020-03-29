@@ -13,6 +13,10 @@ using System.Windows.Media;
 using ViSo.Dialogs.Controls;
 using WPF.Tools.BaseClasses;
 using WPF.Tools.Specialized;
+using System.Text;
+using ViSo.Dialogs.ModelViewer;
+using Bibles.Studies;
+using Bibles.Studies.Models;
 
 namespace Bibles.Reader
 {
@@ -90,6 +94,85 @@ namespace Bibles.Reader
         
         private static void Bookmark_Selected(object sender, MouseButtonEventArgs e)
         {
+            try
+            {
+                Image item = (Image)sender;
+
+                string verseKey = item.Tag.ParseToString();
+
+                BookmarkModel bookmarkModel = BiblesData.Database.GetBookmark(verseKey);
+
+                ModelsBookmark model = bookmarkModel.CopyToObject(new ModelsBookmark()).To<ModelsBookmark>();
+
+                model.SetVerse(verseKey);
+
+                if (ModelView.ShowDialog("Bookmark", model).IsFalse())
+                {
+                    return;
+                }
+
+                BookmarkModel dbModel = model.CopyToObject(new BookmarkModel()).To<BookmarkModel>();
+
+                BiblesData.Database.InsertBookmarkModel(dbModel);
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
+        }
+
+        private static void StudyBookmark_Selected(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                MenuItem item = (MenuItem)sender;
+
+                string studyKey = item.Tag.ParseToString();
+
+                string[] keySplit = studyKey.Split(new string[] { "||" }, StringSplitOptions.None);
+
+                int studyHeaderId = keySplit[0].ToInt32();
+
+                #region CHECK FOR OPEN STUDIES
+
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window.GetType() != typeof(ControlWindow))
+                    {
+                        continue;
+                    }
+
+                    UserControlBase controlBase = window.GetPropertyValue("ControlContent").To<UserControlBase>();
+
+                    if (controlBase.GetType() != typeof(EditStudy))
+                    {
+                        continue;
+                    }
+
+                    StudyHeader studyHeader = controlBase.GetPropertyValue("SubjectHeader").To<StudyHeader>();
+
+                    if (studyHeader.StudyHeaderId <= 0)
+                    {
+                        continue;
+                    }
+
+                    window.Focus();
+
+                    return;
+                }
+
+                #endregion
+
+                StudyHeaderModel model = BiblesData.Database.GetStudyHeader(studyHeaderId.ToInt32());
+
+                EditStudy edit = new EditStudy(model);
+
+                ControlDialog.Show(model.StudyName, edit, "SaveStudy", autoSize: false);
+            }
+            catch (Exception err)
+            {
+                ErrorLog.ShowError(err);
+            }
         }
 
         private static void LinkImage_Selected(object sender, MouseButtonEventArgs e)
@@ -132,7 +215,7 @@ namespace Bibles.Reader
 
             result[1] = BibleLoader.GetVerseBookmarkImage(bibleId, verse.BibleVerseKey);
 
-            result[2] = BibleLoader.GetStudyBookmarkImage(verse.BibleVerseKey);
+            result[2] = BibleLoader.GetStudyBookmarkImage(bibleId, verse.BibleVerseKey);
 
             result[3] = BibleLoader.GetLinkImage(verse.BibleVerseKey);
 
@@ -171,79 +254,50 @@ namespace Bibles.Reader
             return img;
         }
 
-        private static Image GetStudyBookmarkImage(string verseKey)
+        private static Image GetStudyBookmarkImage(int bibleId,string verseKey)
         {
-            return null;
+            string bibleKey = Formatters.IsBiblesKey(verseKey) ?
+                verseKey : $"{bibleId}||{verseKey}";
 
-            //Dictionary<string, string> bookmarks = new Dictionary<string, string>(); //GlobalDictionary.GetBookmarkedStudies(verseKey);
+            List<StudyBookmarkModel> modelsList = BiblesData.Database.GetStudyBookmarks(bibleKey);
 
-            //List<Guid> removedBookmarksList = new List<Guid>();
+            if (modelsList.Count <= 0)
+            {
+                return null;
+            }
 
-            //foreach (KeyValuePair<string, string> keyItem in GlobalDictionary.studyBookmarks)
-            //{
-            //    if (keyItem.Key.EndsWith(verseKey))
-            //    {
-            //        if (!File.Exists(keyItem.Value))
-            //        {
-            //            string[] keySplit = keyItem.Key.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
 
-            //            removedBookmarksList.Add(Guid.Parse(keySplit[0]));
+            Image img = new Image
+            {
+                Source = IconSets.ResourceImageSource("BookmarkSmallRed", 16),
+                Opacity = 0.5
+            };
 
-            //            continue;
-            //        }
+            ContextMenu bookmarkMenu = new ContextMenu();
 
-            //        bookmarks.Add(keyItem.Key, keyItem.Value);
-            //    }
-            //}
+            StringBuilder imageTooltip = new StringBuilder();
 
-            //foreach (Guid key in removedBookmarksList)
-            //{
-            //    GlobalDictionary.RemoveStudyBookmark(key, verseKey);
-            //}
+            imageTooltip.AppendLine("(Right Click to Edit)");
 
-            //if (bookmarks.Count == 0)
-            //{
-            //    return null;
-            //}
+            foreach (StudyBookmarkModel studyMark in modelsList)
+            {
+                MenuItem menuItem = new MenuItem { Header = studyMark.StudyName, Tag = studyMark.StudyVerseKey };
 
-            //Image img = new Image
-            //{
-            //    Source = IconSets.ResourceImageSource("BookmarkSmallRed", 16),
-            //    Opacity = 0.5
-            //};
+                menuItem.Click += BibleLoader.StudyBookmark_Selected;
 
-            //if (bookmarks.Count > 0)
-            //{
-            //    ContextMenu bookmarkMenu = new ContextMenu();
+                bookmarkMenu.Items.Add(menuItem);
 
-            //    StringBuilder imageTooltip = new StringBuilder();
+                imageTooltip.AppendLine(studyMark.StudyName);
+            }
 
-            //    imageTooltip.AppendLine("(Click to Edit)");
+            img.ContextMenu = bookmarkMenu;
 
-            //    foreach (KeyValuePair<string, string> item in bookmarks)
-            //    {
-            //        //string[] keySplit = item.Key.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
-            //        string subjectName = Path.GetFileNameWithoutExtension(item.Value);
+            img.ToolTip = imageTooltip.ToString();
 
-            //        MenuItem menuItem = new MenuItem { Header = subjectName, Tag = item.Value };
-
-            //        imageTooltip.AppendLine(subjectName);
-
-            //        menuItem.Click += GlobalDictionary.StudyBookmarkMenuItem_Cliked;
-
-            //        bookmarkMenu.Items.Add(menuItem);
-            //    }
-
-            //    img.ToolTip = imageTooltip.ToString();
-
-            //    img.PreviewMouseUp += GlobalDictionary.StudyBookmarkContextMenu_Selected;
-
-            //    img.ContextMenu = bookmarkMenu;
-            //}
-
-            //return img;
+            return img;
         }
 
+        
         public static Image GetLinkImage(string verseKey)
         {
             if (!BiblesData.Database.HaveLink(verseKey))

@@ -34,8 +34,8 @@
                                       ItemsSource="{Binding CategoryStudyHeaders}"
                                       SelectedItem="{Binding SelectedStudyHeader}">
             <DataGridObjects:ViSoDataGrid.Columns>
-                <DataGridTextColumn Header="Study" Binding="{Binding StudyName}" />
-                <DataGridTextColumn Header="Author" Binding="{Binding Author}" />
+                <DataGridObjects:VisoDataGridTextColumn Header="Study" Binding="{Binding StudyName}" />
+                <DataGridObjects:VisoDataGridTextColumn Header="Author" Binding="{Binding Author}" />
             </DataGridObjects:ViSoDataGrid.Columns>    
         </DataGridObjects:ViSoDataGrid>
     </Grid>

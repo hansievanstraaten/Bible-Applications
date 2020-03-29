@@ -33,9 +33,9 @@
                                       SelectedItem="{Binding SelectedBookmark}"
                                       AutoGenerateColumns="False">
             <DataGridObjects:ViSoDataGrid.Columns>
-                <DataGridTextColumn Header="Verse" Binding="{Binding SelectedVerse}" />
-                <DataGridTextColumn Header="Bible" Binding="{Binding BibleName}" />
-                <DataGridTextColumn Header="Name" Binding="{Binding BookMarkName}" />
+                <DataGridObjects:VisoDataGridTextColumn HeaderTranslate="Verse" Binding="{Binding SelectedVerse}" />
+                <DataGridObjects:VisoDataGridTextColumn HeaderTranslate="Bible" Binding="{Binding BibleName}" />
+                <DataGridObjects:VisoDataGridTextColumn HeaderTranslate="Name" Binding="{Binding BookMarkName}" />
             </DataGridObjects:ViSoDataGrid.Columns>
         </DataGridObjects:ViSoDataGrid>
 

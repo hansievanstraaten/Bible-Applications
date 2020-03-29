@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using WPF.Tools.BaseClasses;
 using GeneralExtensions;
+using WPF.Tools.Specialized;
 
 namespace ViSo.Dialogs.Controls
 {
@@ -46,18 +47,25 @@ namespace ViSo.Dialogs.Controls
             this.Loaded += this.ControlWindow_Loaded;
         }
 
+        public UserControlBase ControlContent
+        {
+            get
+            {
+                return this.uxContent.Content.To<UserControlBase>();
+            }
+        }
+
         private void ControlWindow_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
-
                 this.AutoSize = this.isAutoZize;
                 
                 this.Top = this.Height / 5;
             }
             catch (Exception err)
             {
-                MessageBox.Show(err.InnerExceptionMessage());
+                MessageDisplay.Show(err.InnerExceptionMessage());
             }
         }
 
@@ -86,7 +94,7 @@ namespace ViSo.Dialogs.Controls
             }
             catch (Exception err)
             {
-                MessageBox.Show(err.InnerExceptionMessage());
+                MessageDisplay.Show(err.InnerExceptionMessage());
             }
         }
 

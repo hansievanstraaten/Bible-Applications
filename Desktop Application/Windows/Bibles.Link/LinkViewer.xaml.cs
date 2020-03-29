@@ -8,6 +8,7 @@ using WPF.Tools.CommonControls;
 using GeneralExtensions;
 using System.Windows;
 using System.Collections.Generic;
+using WPF.Tools.Specialized;
 
 namespace Bibles.Link
 {
@@ -107,7 +108,7 @@ namespace Bibles.Link
         {
             if (this.uxLinkTree.SelectedItem == null)
             {
-                MessageBox.Show("Please select a Link");
+                MessageDisplay.Show("Please select a Link");
 
                 return;
             }
@@ -118,14 +119,14 @@ namespace Bibles.Link
 
                 if (!this.modelsLinksDictionary.ContainsKey(verseKey))
                 {
-                    MessageBox.Show("Cannot delete topmost parent item.");
+                    MessageDisplay.Show("Cannot delete topmost parent item.");
 
                     return;
                 }
 
                 string message = $"Are you sure that you would like to delete the {GlobalStaticData.Intance.GetKeyDescription(verseKey)} Link?";
 
-                if (MessageBox.Show(message, "Warning", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                if (MessageDisplay.Show(message, "Warning", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                 {
                     return;
                 }

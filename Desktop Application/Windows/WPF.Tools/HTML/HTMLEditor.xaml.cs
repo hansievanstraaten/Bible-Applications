@@ -11,6 +11,7 @@ using System.Windows.Media.Imaging;
 using WPF.Tools.BaseClasses;
 using WPF.Tools.ColoutPicker;
 using WPF.Tools.Dictionaries;
+using WPF.Tools.Specialized;
 using WPF.Tools.ToolModels;
 
 namespace WPF.Tools.HTML
@@ -187,7 +188,7 @@ namespace WPF.Tools.HTML
       }
       catch (Exception err)
       {
-        MessageBox.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
+        MessageDisplay.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
       }
     }
     
@@ -216,7 +217,7 @@ namespace WPF.Tools.HTML
       }
       catch (Exception err)
       {
-        MessageBox.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
+        MessageDisplay.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
       }
     }
     

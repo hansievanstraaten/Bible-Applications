@@ -9,6 +9,7 @@ using System.Windows;
 using GeneralExtensions;
 using WPF.Tools.Dictionaries;
 using WPF.Tools.ModelViewer.ValidationRules;
+using WPF.Tools.Specialized;
 
 namespace WPF.Tools.ModelViewer
 {
@@ -170,7 +171,7 @@ namespace WPF.Tools.ModelViewer
       }
       catch (Exception err)
       {
-        MessageBox.Show(err.Message);
+        MessageDisplay.Show(err.Message);
       }
     }
 
@@ -203,7 +204,7 @@ namespace WPF.Tools.ModelViewer
       }
       catch (Exception err)
       {
-        MessageBox.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
+        MessageDisplay.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
       }
     }
 
@@ -232,7 +233,7 @@ namespace WPF.Tools.ModelViewer
       }
       catch (Exception err)
       {
-        MessageBox.Show(err.Message);
+        MessageDisplay.Show(err.Message);
       }
     }
 

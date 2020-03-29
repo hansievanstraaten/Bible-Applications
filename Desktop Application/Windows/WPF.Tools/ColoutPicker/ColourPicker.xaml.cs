@@ -5,6 +5,7 @@ using System.Windows.Media;
 using WPF.Tools.BaseClasses;
 using WPF.Tools.CommonControls;
 using WPF.Tools.Dictionaries;
+using WPF.Tools.Specialized;
 
 namespace WPF.Tools.ColoutPicker
 {
@@ -36,7 +37,7 @@ namespace WPF.Tools.ColoutPicker
       }
       catch (Exception err)
       {
-        MessageBox.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
+        MessageDisplay.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
       }
     }
     

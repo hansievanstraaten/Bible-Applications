@@ -1,6 +1,7 @@
 ﻿using Bibles.Common;
 using Bibles.DataResources;
 using Bibles.DataResources.Aggregates;
+using Bibles.DataResources.Bookmarks;
 using Bibles.Studies.Models;
 using GeneralExtensions;
 using System;
@@ -74,6 +75,11 @@ namespace Bibles.Studies
             }
         }
 
+        public void AddBookmark(ModelsBookmark bookmark)
+        {
+            this.uxStudyBookmarks.AddBookmark(bookmark);
+        }
+
         private void EditStudy_Loaded(object sender, RoutedEventArgs e)
         {
             if (base.WasFirstLoaded)
@@ -86,6 +92,8 @@ namespace Bibles.Studies
                 this.uxColumn0.Width = new GridLength(this.uxColumn0.Width.Value + 1, GridUnitType.Star);
 
                 this.uxContent.FlowDocumentText = this.SubjectContent.Content.UnzipFile().ParseToString();
+
+                this.uxStudyBookmarks.LoadBookmarks(this.SubjectHeader.StudyHeaderId);
 
                 base.WasFirstLoaded = true;
             }

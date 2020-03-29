@@ -7,6 +7,7 @@ using System.Windows;
 using WPF.Tools.Functions;
 using WPF.Tools.Dictionaries;
 using WPF.Tools.TabControl;
+using WPF.Tools.Specialized;
 
 namespace WPF.Tools.Paneling
 {
@@ -130,7 +131,7 @@ namespace WPF.Tools.Paneling
       }
       catch (Exception err)
       {
-        MessageBox.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
+        MessageDisplay.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
       }
     }
     

@@ -13,6 +13,7 @@ using System.Windows.Media;
 using ViSo.Common;
 using WPF.Tools.Dictionaries;
 using WPF.Tools.Exstention;
+using WPF.Tools.Specialized;
 
 namespace WPF.Tools.DataGridObjects
 {
@@ -128,7 +129,7 @@ namespace WPF.Tools.DataGridObjects
       }
       catch (Exception err)
       {
-        MessageBox.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
+        MessageDisplay.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
       }
     }
   }

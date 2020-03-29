@@ -1,10 +1,14 @@
 ﻿using Bibles.Common;
 using Bibles.DataResources;
 using Bibles.DataResources.Aggregates;
+using Bibles.Studies.Models;
+using GeneralExtensions;
 using System;
 using System.Windows;
 using ViSo.Dialogs.Controls;
 using WPF.Tools.BaseClasses;
+using WPF.Tools.Exstention;
+using WPF.Tools.Specialized;
 
 namespace Bibles.Studies
 {
@@ -79,16 +83,52 @@ namespace Bibles.Studies
         {
             if (this.SelectedStudyHeader == null)
             {
-                MessageBox.Show("Please select a Study.");
+                MessageDisplay.Show("Please select a Study.");
 
                 return;
             }
 
             try
             {
+
+                #region CHECK FOR OPEN STUDIES
+
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window.GetType() != typeof(ControlWindow))
+                    {
+                        continue;
+                    }
+
+                    UserControlBase controlBase = window.GetPropertyValue("ControlContent").To<UserControlBase>();
+
+                    if (controlBase.GetType() != typeof(EditStudy))
+                    {
+                        continue;
+                    }
+
+                    StudyHeader studyHeader = controlBase.GetPropertyValue("SubjectHeader").To<StudyHeader>();
+
+                    if (studyHeader.StudyHeaderId <= 0)
+                    {
+                        continue;
+                    }
+
+                    window.Focus();
+
+                    this.CloseIfNotMainWindow(true);
+
+                    return;
+                }
+
+                #endregion
+
+
                 EditStudy edit = new EditStudy(this.SelectedStudyHeader);
 
                 ControlDialog.Show(this.SelectedStudyHeader.StudyName, edit, "SaveStudy", autoSize:false);
+
+                this.CloseIfNotMainWindow(true);
             }
             catch (Exception err)
             {

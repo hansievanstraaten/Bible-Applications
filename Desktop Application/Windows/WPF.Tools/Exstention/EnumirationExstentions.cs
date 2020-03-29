@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using WPF.Tools.ToolModels;
 using GeneralExtensions;
+using WPF.Tools.Dictionaries;
 
 namespace WPF.Tools.Exstention
 {
@@ -31,7 +32,7 @@ namespace WPF.Tools.Exstention
             {
                 result.Add(new DataItemModel
                 {
-                    DisplayValue = item.GetDescriptionAttribute(),
+                    DisplayValue =item.GetDescriptionAttribute(),
                     ItemKey = item.ToInt32()
                 });
             }

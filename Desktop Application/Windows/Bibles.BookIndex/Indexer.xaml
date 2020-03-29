@@ -39,7 +39,7 @@
                                       ItemsSource="{Binding OldTestamentBooks}"
                                       SelectedItem="{Binding SelectedOldTestamentBook}">
             <DataGridObjects:ViSoDataGrid.Columns>
-                <DataGridTextColumn Header="Book" Binding="{Binding BookName}" IsReadOnly="True" />
+                <DataGridObjects:VisoDataGridTextColumn HeaderTranslate="Book" Binding="{Binding BookName}" IsReadOnly="True" />
             </DataGridObjects:ViSoDataGrid.Columns>            
         </DataGridObjects:ViSoDataGrid>
 
@@ -51,7 +51,7 @@
                                       ItemsSource="{Binding NewTestamentBooks}"
                                       SelectedItem="{Binding SelectedNewTestamentBook}">
             <DataGridObjects:ViSoDataGrid.Columns>
-                <DataGridTextColumn Header="Book" Binding="{Binding BookName}" IsReadOnly="True" />
+                <DataGridObjects:VisoDataGridTextColumn Header="Book" Binding="{Binding BookName}" IsReadOnly="True" />
             </DataGridObjects:ViSoDataGrid.Columns>
         </DataGridObjects:ViSoDataGrid>
 
@@ -65,13 +65,13 @@
                                       ItemsSource="{Binding BookChapters}"
                                       SelectedItem="{Binding SelectedChapter}">
             <DataGridObjects:ViSoDataGrid.Columns>
-                <DataGridTextColumn Header="Chapters" Binding="{Binding ChapterNumber}">
-                    <DataGridTextColumn.ElementStyle>
+                <DataGridObjects:VisoDataGridTextColumn HeaderTranslate="Chapters" Binding="{Binding ChapterNumber}">
+                    <DataGridObjects:VisoDataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="HorizontalAlignment" Value="Center" />
                         </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
+                    </DataGridObjects:VisoDataGridTextColumn.ElementStyle>
+                </DataGridObjects:VisoDataGridTextColumn>
             </DataGridObjects:ViSoDataGrid.Columns>
         </DataGridObjects:ViSoDataGrid>
                 
@@ -84,13 +84,13 @@
                                       ItemsSource="{Binding ChapterVerses}"
                                       SelectedItem="{Binding SelectedVerse}">
             <DataGridObjects:ViSoDataGrid.Columns>
-                <DataGridTextColumn Header="Verses" Binding="{Binding VerseNumber}" IsReadOnly="True">
-                    <DataGridTextColumn.ElementStyle>
+                <DataGridObjects:VisoDataGridTextColumn HeaderTranslate="Verses" Binding="{Binding VerseNumber}" IsReadOnly="True">
+                    <DataGridObjects:VisoDataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="HorizontalAlignment" Value="Center" />
                         </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
+                    </DataGridObjects:VisoDataGridTextColumn.ElementStyle>
+                </DataGridObjects:VisoDataGridTextColumn>
             </DataGridObjects:ViSoDataGrid.Columns>            
         </DataGridObjects:ViSoDataGrid>
                                       

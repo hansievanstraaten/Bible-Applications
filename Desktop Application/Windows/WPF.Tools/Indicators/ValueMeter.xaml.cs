@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using GeneralExtensions;
 using WPF.Tools.Dictionaries;
+using WPF.Tools.Specialized;
 
 namespace WPF.Tools.Indicators
 {
@@ -202,7 +203,7 @@ namespace WPF.Tools.Indicators
       }
       catch (Exception err)
       {
-        MessageBox.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
+        MessageDisplay.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
       }
     }
 

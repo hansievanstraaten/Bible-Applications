@@ -23,7 +23,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- Main Menu -->
-        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" x:Name="uxMainMenu">
             <MenuItem Header="File">
                 <MenuItem Header="Exit" Click="Exit_Cliked" />
             </MenuItem>
@@ -38,6 +38,13 @@
             <MenuItem Header="Study Centre">
                 <MenuItem Header="New Study" Click="NewStudy_Cliked" />
                 <MenuItem Header="Open Study" Click="OpenStudy_Cliked" />
+            </MenuItem>
+            <MenuItem Header="Preferences">
+                <MenuItem Header="User Preferences" Click="UserPreferences_Cliked" />
+                <MenuItem Header="Language Setup" Click="LanguageSetup_Cliked" />
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="About" Click="About_Cliked" />
             </MenuItem>
         </Menu>
 

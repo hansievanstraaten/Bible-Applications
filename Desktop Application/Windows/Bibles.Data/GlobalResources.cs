@@ -12,7 +12,7 @@ namespace Bibles.Data
         {
             get
             {
-                return BiblesData.Database.GetPreferences().Result;
+                return BiblesData.Database.GetPreferences();
             }
         }
 

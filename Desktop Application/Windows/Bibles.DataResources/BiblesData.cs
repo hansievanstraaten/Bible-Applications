@@ -54,14 +54,26 @@ namespace Bibles.DataResources
 
         #region USERPREFERENCEMODEL
 
-        public Task<UserPreferenceModel> GetPreferences()
+        public UserPreferenceModel GetPreferences()
         {
-            Task<UserPreferenceModel> result = BiblesData.database.Table<UserPreferenceModel>().FirstOrDefaultAsync();
+            try
+            {
+                if (!database.TableMappings.Any(up => up.MappedType.Name == typeof(UserPreferenceModel).Name))
+                {
+                     database.CreateTablesAsync(CreateFlags.AutoIncPK, typeof(UserPreferenceModel)).ConfigureAwait(false);
+                }
 
-            return result;
+                Task<UserPreferenceModel> result = BiblesData.database.Table<UserPreferenceModel>().FirstOrDefaultAsync();
+
+                return result.Result;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
-        public int InsertserPreference(UserPreferenceModel userPreference)
+        public int InsertPreference(UserPreferenceModel userPreference)
         {
             Task<UserPreferenceModel> existing = BiblesData.database.Table<UserPreferenceModel>().FirstOrDefaultAsync();
 
@@ -76,7 +88,7 @@ namespace Bibles.DataResources
 
             existing.Result.DefaultBible = userPreference.DefaultBible;
 
-            existing.Result.Language = userPreference.Language;
+            existing.Result.LanguageId = userPreference.LanguageId;
 
             existing.Result.SynchronizzeTabs = userPreference.SynchronizzeTabs;
 
@@ -206,6 +218,8 @@ namespace Bibles.DataResources
 
             if (existing.Result == null)
             {
+                bookmark.BookmarkDate = DateTime.Now;
+
                 BiblesData.database.InsertAsync(bookmark);
             }
             else
@@ -224,6 +238,59 @@ namespace Bibles.DataResources
         {
             BiblesData.database.Table<BookmarkModel>().DeleteAsync(b => b.VerseKey == bibleVerseKey);
         }
+
+        #endregion
+
+        #region STUDY BOOKMARKMODEL
+
+        public void InsertStudyBookmarkModel(StudyBookmarkModel bookmark)
+        {
+            Task<StudyBookmarkModel> existing = BiblesData.database.Table<StudyBookmarkModel>()
+                .FirstOrDefaultAsync(bm => bm.StudyVerseKey == bookmark.StudyVerseKey);
+
+            if (existing.Result == null)
+            {
+                bookmark.BookmarkDate = DateTime.Now;
+
+                BiblesData.database.InsertAsync(bookmark);
+            }
+            else
+            {
+                existing.Result.BookMarkName = bookmark.BookMarkName;
+
+                existing.Result.Description = bookmark.Description;
+
+                existing.Result.VerseRangeEnd = bookmark.VerseRangeEnd;
+
+                BiblesData.database.UpdateAsync(existing.Result);
+            }
+        }
+
+        public List<StudyBookmarkModel> GetStudyBookmarks(string verseKey)
+        {
+            Task<List<StudyBookmarkModel>> existing = BiblesData.database.Table<StudyBookmarkModel>()
+                .Where(bm => bm.VerseKey == verseKey)
+                .ToListAsync();
+
+            return existing.Result;
+        }
+
+        public List<StudyBookmarkModel> GetStudyBookmarks(int studyHeaderId)
+        {
+            string studyHeaderIdKey = $"{studyHeaderId}||";
+
+            Task<List<StudyBookmarkModel>> existing = BiblesData.database.Table<StudyBookmarkModel>()
+                .Where(bm => bm.StudyVerseKey.StartsWith(studyHeaderIdKey))
+                .ToListAsync();
+
+            return existing.Result;
+        }
+
+        public void DeleteStudyBookmark(string studyVerseKey)
+        {
+            BiblesData.database.Table<StudyBookmarkModel>().DeleteAsync(b => b.StudyVerseKey == studyVerseKey);
+        }
+
 
         #endregion
 
@@ -781,6 +848,15 @@ namespace Bibles.DataResources
             return result.Result;
         }
 
+        public StudyHeaderModel GetStudyHeader(int studyHeaderId)
+        {
+            Task<StudyHeaderModel> result = BiblesData.database
+                .Table<StudyHeaderModel>()
+                .FirstOrDefaultAsync(ci => ci.StudyHeaderId == studyHeaderId);
+
+            return result.Result;
+        }
+
         #endregion
 
         #region STUDY CONTENT
@@ -810,6 +886,88 @@ namespace Bibles.DataResources
 
                 BiblesData.database.UpdateAsync(taskContent.Result);
             }
+        }
+
+        #endregion
+
+        #region LANGUAGE PREFERENCES
+
+        public LanguageSetupModel GetLanguage(int languageId)
+        {
+            Task<LanguageSetupModel> result = BiblesData.database
+                .Table<LanguageSetupModel>()
+                .FirstOrDefaultAsync(li => li.LanguageId == languageId);
+
+            return result.Result;
+        }
+
+
+        public List<LanguageSetupModel> GetLanguages()
+        {
+            Task<List<LanguageSetupModel>> result = BiblesData.database
+                .Table<LanguageSetupModel>()
+                .ToListAsync();
+
+            return result.Result;
+        }
+
+        public List<TranslationMappingModel> GetTranslationMapping(int languageId)
+        {
+            Task<List<TranslationMappingModel>> result = BiblesData.database
+                .Table<TranslationMappingModel>()
+                .Where(li => li.LanguageId == languageId)
+                .ToListAsync();
+
+            return result.Result;
+        }
+
+        public int InsertLanguage(LanguageSetupModel language)
+        {
+            Task<LanguageSetupModel> existing = BiblesData.database
+                .Table<LanguageSetupModel>()
+                .FirstOrDefaultAsync(l => l.Language.ToLower() == language.Language.ToLower());
+
+            if (existing.Result == null)
+            {
+                Task<int> response = BiblesData.database.InsertAsync(language);
+
+                int responsevalue = response.Result;
+
+                return language.LanguageId;
+            }
+
+            return existing.Result.LanguageId;
+        }
+
+        public int InsertTranslation(TranslationMappingModel translation)
+        {
+            Task<TranslationMappingModel> exiting = BiblesData.database
+                .Table<TranslationMappingModel>()
+                .FirstOrDefaultAsync(tr => tr.TranslationMappingId == translation.TranslationMappingId);
+
+            if (exiting.Result == null)
+            {
+                Task<int> response = BiblesData.database.InsertAsync(translation);
+
+                int responseValue = response.Result;
+
+                return translation.TranslationMappingId;
+            }
+
+            exiting.Result.EnglishLanguage = translation.EnglishLanguage;
+
+            exiting.Result.OtherLanguage = translation.OtherLanguage;
+
+            BiblesData.database.UpdateAsync(exiting.Result);
+
+            return exiting.Result.TranslationMappingId;
+        }
+
+        public void DeleteTranslationMapping(int translationMappingId)
+        {
+            BiblesData.database
+                .Table<TranslationMappingModel>()
+                .DeleteAsync(tm => tm.TranslationMappingId == translationMappingId);
         }
 
         #endregion
@@ -861,6 +1019,21 @@ namespace Bibles.DataResources
                 if (!database.TableMappings.Any(scon => scon.MappedType.Name == typeof(StudyContentModel).Name))
                 {
                     await database.CreateTablesAsync(CreateFlags.None, typeof(StudyContentModel)).ConfigureAwait(false);
+                }
+
+                if (!database.TableMappings.Any(scon => scon.MappedType.Name == typeof(StudyBookmarkModel).Name))
+                {
+                    await database.CreateTablesAsync(CreateFlags.None, typeof(StudyBookmarkModel)).ConfigureAwait(false);
+                }
+                
+                if (!database.TableMappings.Any(scon => scon.MappedType.Name == typeof(LanguageSetupModel).Name))
+                {
+                    await database.CreateTablesAsync(CreateFlags.AutoIncPK, typeof(LanguageSetupModel)).ConfigureAwait(false);
+                }
+
+                if (!database.TableMappings.Any(scon => scon.MappedType.Name == typeof(TranslationMappingModel).Name))
+                {
+                    await database.CreateTablesAsync(CreateFlags.AutoIncPK, typeof(TranslationMappingModel)).ConfigureAwait(false);
                 }
 
                 BiblesData.IsInitialized = true;

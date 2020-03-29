@@ -3,6 +3,7 @@ using System;
 using System.Text;
 using System.Windows;
 using WPF.Tools.Dictionaries;
+using WPF.Tools.Specialized;
 
 namespace Bibles.Common
 {
@@ -23,10 +24,10 @@ namespace Bibles.Common
 
             errString.AppendLine(err.ExstendedSource());
 
-            MessageBox.Show(errString.ToString());
+            MessageDisplay.Show(errString.ToString());
 
 #else
-            MessageBox.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
+            MessageDisplay.Show(TranslationDictionary.Translate(err.InnerExceptionMessage()));
 #endif
         }
 

@@ -41,9 +41,9 @@
                                       SelectedItem="{Binding SelectedHighlight}"
                                       AutoGenerateColumns="False">
             <DataGridObjects:ViSoDataGrid.Columns>
-                <DataGridTextColumn Header="Bible" Binding="{Binding Bible}" />
+                <DataGridObjects:VisoDataGridTextColumn HeaderTranslate="Bible" Binding="{Binding Bible}" />
 
-                <DataGridTextColumn Header="Verse" Binding="{Binding Verse}" />
+                <DataGridObjects:VisoDataGridTextColumn HeaderTranslate="Verse" Binding="{Binding Verse}" />
 
                 <DataGridTemplateColumn >
                     <DataGridTemplateColumn.CellTemplate>

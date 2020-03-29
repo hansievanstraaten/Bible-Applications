@@ -3,6 +3,7 @@ using System.Windows;
 using WPF.Tools.BaseClasses;
 using GeneralExtensions;
 using System.Windows.Input;
+using WPF.Tools.Specialized;
 
 namespace ViSo.Dialogs
 {
@@ -56,7 +57,7 @@ namespace ViSo.Dialogs
       }
       catch (Exception err)
       {
-        MessageBox.Show(err.InnerExceptionMessage());
+        MessageDisplay.Show(err.InnerExceptionMessage());
       }
     }
 
@@ -87,7 +88,7 @@ namespace ViSo.Dialogs
       }
       catch (Exception err)
       {
-        MessageBox.Show(err.InnerExceptionMessage());
+        MessageDisplay.Show(err.InnerExceptionMessage());
       }
     }
 

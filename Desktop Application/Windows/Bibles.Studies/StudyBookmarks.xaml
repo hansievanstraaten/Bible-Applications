@@ -19,19 +19,37 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        
-        <DataGridObjects:ViSoDataGrid Grid.Row="0" Grid.Column="0" />
 
-        <CommonControls:HorizontalGridSplit Grid.Row="1" Grid.Column="0" />
-
-        <StackPanel Grid.Row="2" Grid.Column="0">
-            <CommonControls:LableItem Content="Verse" FontWeight="Bold" />
-            <Specialized:HighlightRitchTextBox x:Name="uxVerseText" IsReadOnly="True" BorderThickness="0" />
-            <CommonControls:LableItem Content="Description" FontWeight="Bold" />
-            <CommonControls:TextBoxItem x:Name="uxVerseDescription" BorderThickness="0" />
+        <StackPanel Grid.Row="0" Grid.Column="0">
+            <CommonControls:ActionButton ResourceImageName="OpenBook" ToolTip="Open verse in Reader" Click="OpenVers_Cliked" />
+            <CommonControls:ActionButton ResourceImageName="Edit" ToolTip="Edit Bookmark" Click="EditVerse_Cliked" />
+            <CommonControls:ActionButton ResourceImageName="Delete" ToolTip="Delete Bookmark" Click="DeleteVerse_Cliked" />
         </StackPanel>
+
+        <DataGridObjects:ViSoDataGrid Grid.Row="0" Grid.Column="1"
+                                      ItemsSource="{Binding Bookmarks}"
+                                      SelectedItem="{Binding SelectedBookmark}"
+                                      AutoGenerateColumns="False">
+            <DataGridObjects:ViSoDataGrid.Columns>
+                <DataGridObjects:VisoDataGridTextColumn HeaderTranslate="Verse" Binding="{Binding SelectedVerse}" />
+                <DataGridObjects:VisoDataGridTextColumn HeaderTranslate="Bookmark Name" Binding="{Binding BookMarkName}" />
+                <DataGridObjects:VisoDataGridTextColumn HeaderTranslate="Bible" Binding="{Binding BibleName}" />
+            </DataGridObjects:ViSoDataGrid.Columns>
+        </DataGridObjects:ViSoDataGrid>
+
+        <CommonControls:HorizontalGridSplit Grid.Row="1" Grid.Column="1" />
+
+        <ScrollViewer Grid.Row="2" Grid.Column="1">            
+            <StackPanel>
+                <CommonControls:LableItem Content="Verse" FontWeight="Bold" />
+                <CommonControls:TextBoxItem x:Name="uxVerseText" IsReadOnly="True" TextWrapping="WrapWithOverflow" Margin="0,0,0,15" BorderBrush="Transparent" />
+                <CommonControls:LableItem Content="Description" FontWeight="Bold" />
+                <CommonControls:TextBoxItem x:Name="uxVerseDescription" BorderThickness="0" />
+            </StackPanel>
+        </ScrollViewer>
             
     </Grid>
 </src:UserControlBase>

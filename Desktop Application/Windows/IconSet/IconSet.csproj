@@ -212,6 +212,8 @@
     <None Include="Resources\Payment.png" />
     <None Include="Resources\Backup.png" />
     <None Include="Resources\BackupRestore.png" />
+    <None Include="Resources\Import.png" />
+    <None Include="Resources\Export.png" />
     <Content Include="ViSo_nice.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

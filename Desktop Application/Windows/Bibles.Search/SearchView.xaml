@@ -23,7 +23,7 @@
 
         <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
             <CommonControls:TextBoxItem MinWidth="150" ToolTip="Search" x:Name="uxSearchText" />
-            <CommonControls:ActionButton ResourceImageName="Search" Click="Search_Cliked" />
+            <CommonControls:ActionButton ResourceImageName="Search" ToolTip="Search"  Click="Search_Cliked" />
             <CommonControls:LableItem Content="Search Comparison" />
             <CommonControls:ComboBoxTool x:Name="uxSearchComparison" MinWidth="150" />
             <CommonControls:LableItem Content="Search in Bible" />
@@ -34,7 +34,7 @@
 
         <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
             <CommonControls:ActionButton ToolTip="Open Book in Reader" ResourceImageName="OpenBook" Click="OpenBookmark_Cliked" />
-            <CommonControls:ActionButton ResourceImageName="Bookmark" Height="26" Click="Bookmark_Cliked" />
+            <CommonControls:ActionButton ResourceImageName="Bookmark" ToolTip="Bookmark"  Height="26" Click="Bookmark_Cliked" />
             <CommonControls:ActionButton x:Name="uxLink" ToolTip="Link Verse" ResourceImageName="Link" Click="LinkVerse_Cliked" />
         </StackPanel>
 

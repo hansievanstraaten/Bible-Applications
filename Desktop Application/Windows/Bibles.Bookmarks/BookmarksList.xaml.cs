@@ -10,6 +10,7 @@ using ViSo.Dialogs.ModelViewer;
 using ViSo.Dialogs.TextEditor;
 using WPF.Tools.BaseClasses;
 using WPF.Tools.Exstention;
+using WPF.Tools.Specialized;
 
 namespace Bibles.Bookmarks
 {
@@ -76,7 +77,7 @@ namespace Bibles.Bookmarks
         {
             if (this.SelectedBookmark == null)
             {
-                MessageBox.Show("Please select a Bookmark");
+                MessageDisplay.Show("Please select a Bookmark");
 
                 return;
             }
@@ -95,7 +96,7 @@ namespace Bibles.Bookmarks
         {
             if (this.SelectedBookmark == null)
             {
-                MessageBox.Show("Please select a Bookmark");
+                MessageDisplay.Show("Please select a Bookmark");
 
                 return;
             }
@@ -146,7 +147,7 @@ namespace Bibles.Bookmarks
         {
             if (this.SelectedBookmark == null)
             {
-                MessageBox.Show("Please select a Bookmark");
+                MessageDisplay.Show("Please select a Bookmark");
 
                 return;
             }
@@ -155,7 +156,7 @@ namespace Bibles.Bookmarks
             {
                 string message = $"Are you sure you would like to delete Bookmark {this.SelectedBookmark.SelectedVerse}.";
 
-                if (MessageBox.Show(message, "Warning", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                if (MessageDisplay.Show(message, "Warning", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                 {
                     return;
                 }
